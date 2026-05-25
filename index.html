@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,0,500;9..144,0,600;9..144,1,400;9..144,1,500&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500;600&family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo+Black&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     THEMES — bold and saturated, no apologies
+     ============================================================ */
+
+  /* SOFT AUTUMN — warm taupe + sage + terracotta + cream */
+  :root, [data-theme="autumn"] {
+    --bg: #E3D4BD;
+    --bg-elev: #D8C5A8;
+    --bg-card: #EDDFC8;
+    --border: #9A8172;
+    --border-soft: #C2A98E;
+    --text: #3D2E22;
+    --text-dim: #7A6255;
+    --text-faint: #9A8172;
+    --accent: #B77762;
+    --accent-warm: #C28571;
+    --accent-soft: #8A8B68;
+    --green: #8A8B68;
+    --red: #B77762;
+    --hero-bg: linear-gradient(135deg, #B77762 0%, #C2A06F 50%, #8A8B68 100%);
+    --hero-text: #FFF6E8;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Fraunces', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 10px;
+    --hero-radius: 16px;
+    --noise: 0.06;
+  }
+
+  /* AUTUMN VINEYARD — saturated orange + rust + olive + steel blue */
+  [data-theme="vineyard"] {
+    --bg: #E89545;
+    --bg-elev: #D67C2E;
+    --bg-card: #F0A659;
+    --border: #7A2E15;
+    --border-soft: #B85420;
+    --text: #2D1810;
+    --text-dim: #5C2E18;
+    --text-faint: #7A2E15;
+    --accent: #7A2E15;
+    --accent-warm: #4A6B7A;
+    --accent-soft: #6B7A3D;
+    --green: #6B7A3D;
+    --red: #7A2E15;
+    --hero-bg: linear-gradient(135deg, #E89545 0%, #B85420 40%, #7A2E15 70%, #4A6B7A 100%);
+    --hero-text: #FFF6E8;
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Playfair Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 700;
+    --card-radius: 8px;
+    --hero-radius: 14px;
+    --noise: 0.08;
+  }
+
+  /* MOD LIVING ROOM — avocado + turquoise + golden ochre + espresso */
+  [data-theme="mod"] {
+    --bg: #D8C8B1;
+    --bg-elev: #C9B89A;
+    --bg-card: #E5D8C0;
+    --border: #5A4638;
+    --border-soft: #8B7355;
+    --text: #2D1F15;
+    --text-dim: #5A4638;
+    --text-faint: #8B7355;
+    --accent: #C69334;
+    --accent-warm: #6D9C99;
+    --accent-soft: #75804A;
+    --green: #75804A;
+    --red: #B85420;
+    --hero-bg: linear-gradient(135deg, #75804A 0%, #6D9C99 50%, #C69334 100%);
+    --hero-text: #F5E8D0;
+    --display: 'DM Serif Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'DM Serif Display', Georgia, serif;
+    --hero-style: normal;
+    --hero-weight: 400;
+    --card-radius: 14px;
+    --hero-radius: 22px;
+    --noise: 0.07;
+  }
+
+  /* MUSTARD KITCHEN — saturated mustard + olive moss + burnt orange */
+  [data-theme="mustard"] {
+    --bg: #DCC9A8;
+    --bg-elev: #CFB988;
+    --bg-card: #E8D9B5;
+    --border: #7B5A43;
+    --border-soft: #A88858;
+    --text: #2D1F0F;
+    --text-dim: #5C4226;
+    --text-faint: #7B5A43;
+    --accent: #B88A1F;
+    --accent-warm: #B5653A;
+    --accent-soft: #7C7B45;
+    --green: #7C7B45;
+    --red: #B5653A;
+    --hero-bg: linear-gradient(135deg, #B88A1F 0%, #B5653A 50%, #7C7B45 100%);
+    --hero-text: #F5E8C8;
+    --display: 'DM Serif Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Bebas Neue', sans-serif;
+    --hero-style: normal;
+    --hero-weight: 400;
+    --card-radius: 4px;
+    --hero-radius: 6px;
+    --noise: 0.09;
+  }
+
+  /* NEUTRAL RUST — dusty mauve + chocolate + cream + brick */
+  [data-theme="rust"] {
+    --bg: #D4C0BD;
+    --bg-elev: #C5AEAB;
+    --bg-card: #E0D0CC;
+    --border: #41322A;
+    --border-soft: #745954;
+    --text: #1F1410;
+    --text-dim: #41322A;
+    --text-faint: #745954;
+    --accent: #7D3A2A;
+    --accent-warm: #9A4A35;
+    --accent-soft: #C8AFA9;
+    --green: #5A6B4A;
+    --red: #7D3A2A;
+    --hero-bg: linear-gradient(135deg, #CABEC1 0%, #745954 40%, #41322A 70%, #7D3A2A 100%);
+    --hero-text: #EBD6CA;
+    --display: 'Lora', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Lora', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 500;
+    --card-radius: 10px;
+    --hero-radius: 16px;
+    --noise: 0.06;
+  }
+
+  /* CASHMERE KITTEN — peach + rose + dove gray + mauve + cream */
+  [data-theme="cashmere"] {
+    --bg: #F5D8B8;
+    --bg-elev: #E8C5A0;
+    --bg-card: #FCE8D2;
+    --border: #B8807F;
+    --border-soft: #D4A8A0;
+    --text: #4A2D2A;
+    --text-dim: #8A5A55;
+    --text-faint: #B8807F;
+    --accent: #B8807F;
+    --accent-warm: #C89890;
+    --accent-soft: #A08590;
+    --green: #8A9588;
+    --red: #B8807F;
+    --hero-bg: linear-gradient(135deg, #FCC8A0 0%, #B8807F 40%, #A08590 70%, #D4C5C0 100%);
+    --hero-text: #FFF8F0;
+    --display: 'Cormorant Garamond', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Cormorant Garamond', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 16px;
+    --hero-radius: 24px;
+    --noise: 0.04;
+  }
+
+  /* SOFT PLUM AUTUMN — dusty plum + mauve brown + cranberry + moss */
+  [data-theme="plum"] {
+    --bg: #C5B0AC;
+    --bg-elev: #B59B97;
+    --bg-card: #D5C2BE;
+    --border: #5A3A3F;
+    --border-soft: #8A6873;
+    --text: #2A1A1F;
+    --text-dim: #5A3A3F;
+    --text-faint: #8A6873;
+    --accent: #8A6873;
+    --accent-warm: #9B5F5E;
+    --accent-soft: #858A68;
+    --green: #858A68;
+    --red: #9B5F5E;
+    --hero-bg: linear-gradient(135deg, #8A6873 0%, #9B5F5E 40%, #A47B7B 70%, #858A68 100%);
+    --hero-text: #F5E8E0;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Fraunces', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 500;
+    --card-radius: 12px;
+    --hero-radius: 18px;
+    --noise: 0.05;
+  }
+
+  /* RUSTIC FALL SHORE — deep mustard + olive + copper + near-black */
+  [data-theme="shore"] {
+    --bg: #2E2006;
+    --bg-elev: #3D2A0A;
+    --bg-card: #443015;
+    --border: #6B5028;
+    --border-soft: #564020;
+    --text: #F0E0BC;
+    --text-dim: #B8A472;
+    --text-faint: #8A7548;
+    --accent: #B47526;
+    --accent-warm: #C68838;
+    --accent-soft: #968754;
+    --green: #968754;
+    --red: #894A14;
+    --hero-bg: linear-gradient(135deg, #B47526 0%, #894A14 50%, #564024 100%);
+    --hero-text: #F5E8C8;
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Playfair Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 700;
+    --card-radius: 8px;
+    --hero-radius: 12px;
+    --noise: 0.07;
+  }
+
+  /* INDUSTRIAL — dark slate + hi-vis orange, brutalist */
+  [data-theme="industrial"] {
+    --bg: #1A1A1A;
+    --bg-elev: #242424;
+    --bg-card: #2D2D2D;
+    --border: #FF6B1A;
+    --border-soft: #3D3D3D;
+    --text: #F0EBE3;
+    --text-dim: #9A9590;
+    --text-faint: #5A5854;
+    --accent: #FF6B1A;
+    --accent-warm: #FF8C3D;
+    --accent-soft: #8A8580;
+    --green: #B8D938;
+    --red: #FF4040;
+    --hero-bg: linear-gradient(135deg, #FF6B1A 0%, #2D2D2D 60%, #1A1A1A 100%);
+    --hero-text: #F0EBE3;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Archivo Black', sans-serif;
+    --hero-style: normal;
+    --hero-weight: 900;
+    --card-radius: 2px;
+    --hero-radius: 2px;
+    --noise: 0.05;
+  }
+
+  /* ZEN / SPA — sage + stone + soft cream */
+  [data-theme="zen"] {
+    --bg: #DDE2D5;
+    --bg-elev: #CFD6C5;
+    --bg-card: #E8ECDE;
+    --border: #6B7858;
+    --border-soft: #A0AD92;
+    --text: #2A3526;
+    --text-dim: #5A6850;
+    --text-faint: #8A9883;
+    --accent: #6B7858;
+    --accent-warm: #8AA080;
+    --accent-soft: #B8A890;
+    --green: #6B7858;
+    --red: #B85540;
+    --hero-bg: linear-gradient(135deg, #B8C8AA 0%, #8AA080 60%, #6B7858 100%);
+    --hero-text: #F5F8EE;
+    --display: 'Cormorant Garamond', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Cormorant Garamond', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 18px;
+    --hero-radius: 26px;
+    --noise: 0.03;
+  }
+
+  /* SPACE AGE LOUNGE — petrol teal + brick + warm gray + walnut */
+  [data-theme="spaceage"] {
+    --bg: #D7B29A;
+    --bg-elev: #C8A289;
+    --bg-card: #E4C5AC;
+    --border: #5B4338;
+    --border-soft: #8C6B5A;
+    --text: #2A1812;
+    --text-dim: #5B4338;
+    --text-faint: #8C6B5A;
+    --accent: #A85C46;
+    --accent-warm: #C07560;
+    --accent-soft: #4F7C7A;
+    --green: #4F7C7A;
+    --red: #A85C46;
+    --hero-bg: linear-gradient(135deg, #4F7C7A 0%, #5B4338 50%, #A85C46 100%);
+    --hero-text: #F5E5D2;
+    --display: 'DM Serif Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'DM Serif Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 12px;
+    --hero-radius: 18px;
+    --noise: 0.06;
+  }
+
+  /* ATOMIC PASTELS — seafoam + salmon + buttercream + powder blue */
+  [data-theme="atomic"] {
+    --bg: #E7D9A8;
+    --bg-elev: #DCC988;
+    --bg-card: #F0E5BC;
+    --border: #5E4B43;
+    --border-soft: #B8A878;
+    --text: #2A1F18;
+    --text-dim: #5E4B43;
+    --text-faint: #9A8870;
+    --accent: #D98C7A;
+    --accent-warm: #E89F8C;
+    --accent-soft: #9DB7A5;
+    --green: #9DB7A5;
+    --red: #D98C7A;
+    --hero-bg: linear-gradient(135deg, #9DB7A5 0%, #8FAFC4 35%, #D98C7A 70%, #E7D9A8 100%);
+    --hero-text: #2A1F18;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Fraunces', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 14px;
+    --hero-radius: 20px;
+    --noise: 0.05;
+  }
+
+  /* PALM SPRINGS POP — turquoise + coral + peach + mocha */
+  [data-theme="palmsprings"] {
+    --bg: #66B7B0;
+    --bg-elev: #50A6A0;
+    --bg-card: #7AC2BC;
+    --border: #7A5A46;
+    --border-soft: #5A8A85;
+    --text: #1F3030;
+    --text-dim: #2A4848;
+    --text-faint: #4A6A68;
+    --accent: #D9755F;
+    --accent-warm: #E89070;
+    --accent-soft: #E4C3A1;
+    --green: #5A8A60;
+    --red: #D9755F;
+    --hero-bg: linear-gradient(135deg, #66B7B0 0%, #D9755F 50%, #E4C3A1 100%);
+    --hero-text: #1F3030;
+    --display: 'DM Serif Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'DM Serif Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 14px;
+    --hero-radius: 20px;
+    --noise: 0.05;
+  }
+
+  /* GOLDEN HOUR — saturated amber + crimson + deep umber */
+  [data-theme="golden"] {
+    --bg: #E0A040;
+    --bg-elev: #C88830;
+    --bg-card: #ECB258;
+    --border: #5C2210;
+    --border-soft: #A04020;
+    --text: #1A0A05;
+    --text-dim: #4A1F0F;
+    --text-faint: #7A3520;
+    --accent: #C04020;
+    --accent-warm: #DC5430;
+    --accent-soft: #8A6028;
+    --green: #6A6028;
+    --red: #C04020;
+    --hero-bg: linear-gradient(135deg, #E0A040 0%, #C04020 50%, #5C2210 100%);
+    --hero-text: #FFF5DC;
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Playfair Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 700;
+    --card-radius: 10px;
+    --hero-radius: 14px;
+    --noise: 0.07;
+  }
+
+  /* ELECTRIC PLUM — hot orange + magenta + deep plum (high voltage) */
+  [data-theme="electric"] {
+    --bg: #2A1535;
+    --bg-elev: #3D1A4A;
+    --bg-card: #401F50;
+    --border: #FF8A3D;
+    --border-soft: #6A2F75;
+    --text: #FFE5C4;
+    --text-dim: #D4A0B8;
+    --text-faint: #9A6080;
+    --accent: #FF8A3D;
+    --accent-warm: #FFA050;
+    --accent-soft: #E83A7A;
+    --green: #A8E060;
+    --red: #E83A7A;
+    --hero-bg: linear-gradient(135deg, #FF8A3D 0%, #E83A7A 40%, #9B2B5A 70%, #3D1A4A 100%);
+    --hero-text: #FFF0DC;
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Playfair Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 700;
+    --card-radius: 10px;
+    --hero-radius: 16px;
+    --noise: 0.06;
+  }
+
+  /* COPPER PATINA — oxidized teal + raw copper + deep navy */
+  [data-theme="copper"] {
+    --bg: #2A4550;
+    --bg-elev: #1F3038;
+    --bg-card: #345560;
+    --border: #C45A2A;
+    --border-soft: #4A6878;
+    --text: #F0DCC0;
+    --text-dim: #B8A088;
+    --text-faint: #8A7868;
+    --accent: #C45A2A;
+    --accent-warm: #DC7240;
+    --accent-soft: #6A8088;
+    --green: #88A878;
+    --red: #C45A2A;
+    --hero-bg: linear-gradient(135deg, #3A5F6E 0%, #C45A2A 50%, #1F3038 100%);
+    --hero-text: #F5E5C8;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Fraunces', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 500;
+    --card-radius: 8px;
+    --hero-radius: 12px;
+    --noise: 0.07;
+  }
+
+  /* BLACK DAHLIA — deep crimson + ink + gold leaf (moody glam) */
+  [data-theme="dahlia"] {
+    --bg: #1A0A0F;
+    --bg-elev: #2A1015;
+    --bg-card: #2F141A;
+    --border: #D4A872;
+    --border-soft: #5A2028;
+    --text: #F0D8B8;
+    --text-dim: #B8A080;
+    --text-faint: #7A5A48;
+    --accent: #D4A872;
+    --accent-warm: #E8C088;
+    --accent-soft: #C0556A;
+    --green: #8A9858;
+    --red: #C0556A;
+    --hero-bg: linear-gradient(135deg, #8A1F2E 0%, #3D0A14 50%, #D4A872 100%);
+    --hero-text: #F5E0C0;
+    --display: 'Playfair Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Playfair Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 700;
+    --card-radius: 10px;
+    --hero-radius: 14px;
+    --noise: 0.05;
+  }
+
+  /* KILIM RUG — saturated red + ochre + teal + cream + rust (woven textile) */
+  [data-theme="kilim"] {
+    --bg: #E8D8B8;
+    --bg-elev: #DCC8A0;
+    --bg-card: #F0E2C2;
+    --border: #7A2E15;
+    --border-soft: #B85420;
+    --text: #2A1408;
+    --text-dim: #5A2810;
+    --text-faint: #8A5A40;
+    --accent: #C44A2E;
+    --accent-warm: #D85A3A;
+    --accent-soft: #2D5560;
+    --green: #2D5560;
+    --red: #C44A2E;
+    --hero-bg: linear-gradient(135deg, #C44A2E 0%, #D6A03A 30%, #2D5560 65%, #7A2E15 100%);
+    --hero-text: #FFF0D0;
+    --display: 'DM Serif Display', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'DM Serif Display', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 400;
+    --card-radius: 10px;
+    --hero-radius: 14px;
+    --noise: 0.08;
+  }
+
+  /* MOROCCAN TILE — petrol teal + saffron + bright cumin */
+  [data-theme="moroccan"] {
+    --bg: #1F4A52;
+    --bg-elev: #163A42;
+    --bg-card: #285860;
+    --border: #E8C470;
+    --border-soft: #3A6A72;
+    --text: #F5E5C0;
+    --text-dim: #D0B888;
+    --text-faint: #8A9A88;
+    --accent: #E8C470;
+    --accent-warm: #F4D688;
+    --accent-soft: #D87530;
+    --green: #88A878;
+    --red: #D87530;
+    --hero-bg: linear-gradient(135deg, #1F4A52 0%, #D87530 50%, #E8C470 100%);
+    --hero-text: #1F2A28;
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Inter Tight', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --hero-font: 'Fraunces', Georgia, serif;
+    --hero-style: italic;
+    --hero-weight: 500;
+    --card-radius: 12px;
+    --hero-radius: 18px;
+    --noise: 0.06;
+  }
+
+  /* ============================================================
+     BASE STYLES
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity: var(--noise);
+    z-index: 0;
+    mix-blend-mode: multiply;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+  .page {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 36px 40px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--hero-bg);
+    color: var(--hero-text);
+    border-radius: var(--hero-radius);
+    padding: 38px 30px 32px;
+    text-align: center;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.6'/></svg>");
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .hero-greeting {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 16px;
+    opacity: 0.85;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-date {
+    font-family: var(--hero-font);
+    font-style: var(--hero-style);
+    font-weight: var(--hero-weight);
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+  }
+  [data-theme="mustard"] .hero-date,
+  [data-theme="industrial"] .hero-date {
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero-time {
+    font-family: var(--mono);
+    font-size: clamp(30px, 4.5vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-countdown {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    font-family: var(--mono);
+    font-size: 11px;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-countdown b {
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  /* GRID + CARDS */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--card-radius);
+    padding: 18px 20px;
+    overflow: hidden;
+    transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+  }
+  .card-title {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  [data-theme="industrial"] .card-title,
+  [data-theme="mustard"] .card-title {
+    font-style: normal;
+    font-family: var(--mono);
+    letter-spacing: 0.15em;
+  }
+  .card-title .meta {
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .col-clocks, .col-tickers, .col-weather,
+  .col-notes, .col-cal, .col-links { grid-column: span 4; }
+  .col-habits { grid-column: span 12; }
+
+  @media (max-width: 1100px) {
+    .col-clocks, .col-tickers, .col-weather,
+    .col-notes, .col-cal, .col-links { grid-column: span 6; }
+    .col-habits { grid-column: span 12; }
+  }
+  @media (max-width: 700px) {
+    .page { padding: 20px; }
+    .col-clocks, .col-tickers, .col-weather,
+    .col-notes, .col-cal, .col-links, .col-habits { grid-column: span 12; }
+  }
+
+  /* CLOCKS */
+  .clock-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border-soft);
+  }
+  .clock-row:last-of-type { border-bottom: none; }
+  .clock-name { font-size: 13px; color: var(--text); }
+  .clock-name .tz {
+    color: var(--text-faint); font-size: 10px;
+    font-family: var(--mono); margin-left: 6px;
+  }
+  .clock-time {
+    font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--accent);
+  }
+  .clock-time .ampm { font-size: 10px; color: var(--text-dim); margin-left: 4px; }
+  .clock-remove {
+    background: none; border: none; color: var(--text-faint);
+    font-size: 14px; cursor: pointer; margin-left: 8px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .clock-row:hover .clock-remove,
+  .ticker-row:hover .clock-remove,
+  .weather-row:hover .clock-remove { opacity: 1; }
+  .clock-remove:hover { color: var(--red); }
+
+  .ticker-row .clock-remove,
+  .weather-row .clock-remove {
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .clock-add { display: flex; gap: 6px; margin-top: 14px; }
+  .clock-add input {
+    flex: 1; background: var(--bg-elev);
+    border: 1px solid var(--border-soft); border-radius: 6px;
+    padding: 8px 10px; color: var(--text);
+    font-family: var(--body); font-size: 12px;
+  }
+  .clock-add input:focus { outline: none; border-color: var(--accent); }
+  .clock-add button {
+    background: var(--accent); color: var(--bg-card);
+    border: none; border-radius: 6px; padding: 0 14px;
+    font-family: var(--body); font-weight: 500; font-size: 12px; cursor: pointer;
+  }
+  .clock-add button:hover { background: var(--accent-warm); }
+  .clock-suggest {
+    margin-top: 6px; font-size: 11px;
+    color: var(--text-faint); font-style: italic;
+  }
+
+  /* TICKERS */
+  .ticker-row {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border-soft);
+    gap: 12px;
+  }
+  .ticker-row:last-of-type { border-bottom: none; }
+  .ticker-sym {
+    font-family: var(--mono); font-weight: 500;
+    font-size: 12px; color: var(--text); letter-spacing: 0.02em;
+  }
+  .ticker-price { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--text); }
+  .ticker-change { font-family: var(--mono); font-size: 11px; text-align: right; min-width: 95px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .ticker-loading { color: var(--text-faint); font-style: italic; }
+
+  /* WEATHER */
+  .weather-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border-soft);
+    gap: 12px;
+  }
+  .weather-row:last-of-type { border-bottom: none; }
+  .weather-city { font-size: 13px; }
+  .weather-city small {
+    display: block; color: var(--text-faint);
+    font-size: 10px; font-family: var(--mono); margin-top: 2px;
+  }
+  .weather-temp { font-family: var(--mono); font-size: 15px; color: var(--accent); font-weight: 500; }
+  .weather-icon { font-size: 18px; width: 26px; text-align: center; }
+
+  /* NOTES */
+  textarea.notes {
+    width: 100%; min-height: 180px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft); border-radius: 8px;
+    padding: 12px 14px; color: var(--text);
+    font-family: var(--body); font-size: 13px;
+    line-height: 1.65; resize: vertical;
+  }
+  textarea.notes:focus { outline: none; border-color: var(--accent); }
+
+  /* CALENDAR */
+  .cal-empty {
+    color: var(--text-dim); font-size: 12px;
+    line-height: 1.65; padding: 8px 0;
+  }
+  .cal-empty code {
+    background: var(--bg-elev); padding: 2px 6px;
+    border-radius: 4px; font-size: 11px; color: var(--accent);
+  }
+  .cal-empty a {
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+  }
+  .cal-event {
+    padding: 8px 0; border-bottom: 1px dashed var(--border-soft);
+    display: grid; grid-template-columns: 90px 1fr;
+    gap: 10px; align-items: baseline;
+  }
+  .cal-event:last-child { border-bottom: none; }
+  .cal-event-time { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .cal-event-title { font-size: 13px; color: var(--text); }
+  .cal-event-date {
+    color: var(--text-faint); font-size: 10px;
+    font-family: var(--mono); margin-bottom: 2px;
+  }
+
+  /* LINKS */
+  .links-list a {
+    display: block; padding: 10px 12px; margin-bottom: 6px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft); border-radius: 6px;
+    color: var(--text); text-decoration: none;
+    font-size: 13px; transition: all 0.15s;
+  }
+  .links-list a:hover {
+    border-color: var(--accent); color: var(--accent);
+    transform: translateX(2px);
+  }
+  .links-list a .arrow {
+    float: right; color: var(--text-faint); font-family: var(--mono);
+  }
+  .links-list a:hover .arrow { color: var(--accent); }
+
+  /* NEWS */
+  .news-list { max-height: 320px; overflow-y: auto; }
+  .news-item { padding: 8px 0; border-bottom: 1px dashed var(--border-soft); }
+  .news-item:last-child { border-bottom: none; }
+  .news-item a {
+    color: var(--text); text-decoration: none;
+    font-size: 12px; line-height: 1.45; display: block;
+  }
+  .news-item a:hover { color: var(--accent); }
+  .news-source {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--text-faint); text-transform: uppercase;
+    letter-spacing: 0.05em; margin-top: 3px;
+  }
+  .news-loading {
+    color: var(--text-faint); font-size: 12px;
+    font-style: italic; padding: 10px 0;
+  }
+  .news-row {
+    grid-column: span 12;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 1100px) { .news-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .news-row { grid-template-columns: 1fr; } }
+
+  /* HABITS */
+  .habits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 22px;
+    margin-bottom: 18px;
+  }
+  .habit-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .habit-toggle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 5px solid var(--accent);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    color: var(--accent);
+    font-size: 42px;
+    font-weight: 700;
+    font-family: var(--display);
+    user-select: none;
+    -webkit-user-select: none;
+    line-height: 1;
+  }
+  .habit-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+  .habit-toggle.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  }
+  .habit-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+    word-break: break-word;
+    max-width: 130px;
+  }
+  .habit-remove {
+    position: absolute;
+    top: -2px;
+    right: 50%;
+    transform: translateX(65px);
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+    padding: 0;
+    line-height: 1;
+    z-index: 2;
+  }
+  .habit-item:hover .habit-remove { opacity: 1; }
+  .habit-remove:hover {
+    color: var(--red);
+    border-color: var(--red);
+  }
+  .habits-empty {
+    color: var(--text-faint);
+    font-style: italic;
+    font-size: 13px;
+    padding: 24px 0;
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+  .habits-progress {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .theme-bar {
+    margin: 0 0 24px;
+    padding: 4px 0 6px;
+    text-align: center;
+  }
+  .theme-options {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .theme-btn {
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+  .theme-btn:hover {
+    transform: translateY(-2px) scale(1.08);
+  }
+  .theme-btn.active {
+    border-color: var(--text);
+  }
+  .theme-swatch {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.18);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    display: block;
+  }
+
+  .footnote {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 10px;
+    color: var(--text-faint); text-align: center;
+    font-family: var(--mono); letter-spacing: 0.1em;
+  }
+
+  /* fade-in */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero, .card { animation: fade-up 0.5s ease backwards; }
+  .hero { animation-delay: 0s; }
+  .grid > *:nth-child(1) { animation-delay: 0.05s; }
+  .grid > *:nth-child(2) { animation-delay: 0.1s; }
+  .grid > *:nth-child(3) { animation-delay: 0.15s; }
+  .grid > *:nth-child(4) { animation-delay: 0.2s; }
+  .grid > *:nth-child(5) { animation-delay: 0.25s; }
+  .grid > *:nth-child(6) { animation-delay: 0.3s; }
+  .grid > *:nth-child(7) { animation-delay: 0.35s; }
+</style>
+</head>
+<body data-theme="autumn">
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-greeting">good <span id="greeting">morning</span></div>
+    <h1 class="hero-date" id="heroDate">—</h1>
+    <div class="hero-time" id="heroTime">—</div>
+    <div class="hero-countdown" id="countdown">Loading…</div>
+  </section>
+
+  <!-- THEME SWITCHER (dots only) -->
+  <div class="theme-bar">
+    <div class="theme-options" id="themeOptions">
+      <button class="theme-btn" data-set-theme="autumn" title="Soft Autumn">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#B77762 0%,#C2A06F 50%,#8A8B68 100%)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="vineyard" title="Autumn Vineyard">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#E89545 0%,#7A2E15 60%,#4A6B7A 100%)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="mod" title="Mod Living Room">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#75804A,#6D9C99 50%,#C69334)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="mustard" title="Mustard Kitchen">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#B88A1F,#B5653A 50%,#7C7B45)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="rust" title="Neutral Rust">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#CABEC1,#745954 50%,#7D3A2A)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="cashmere" title="Cashmere Kitten">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#FCC8A0,#B8807F 50%,#A08590)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="plum" title="Soft Plum">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#8A6873,#9B5F5E 50%,#858A68)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="shore" title="Rustic Shore">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#B47526,#894A14 50%,#2E2006)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="spaceage" title="Space Age Lounge">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#4F7C7A,#A85C46 60%,#5B4338)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="industrial" title="Industrial">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1A1A1A,#FF6B1A)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="zen" title="Zen / Spa">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#B8C8AA,#6B7858)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="atomic" title="Atomic Pastels">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#9DB7A5,#D98C7A 50%,#8FAFC4)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="palmsprings" title="Palm Springs Pop">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#66B7B0,#D9755F 60%,#7A5A46)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="golden" title="Golden Hour">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#E0A040,#C04020 50%,#5C2210)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="electric" title="Electric Plum">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#FF8A3D,#9B2B5A 50%,#3D1A4A)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="copper" title="Copper Patina">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#3A5F6E,#C45A2A 50%,#1F3038)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="dahlia" title="Black Dahlia">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#8A1F2E,#3D0A14 50%,#D4A872)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="kilim" title="Kilim Rug">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#C44A2E,#D6A03A 35%,#2D5560 70%,#7A2E15)"></span>
+      </button>
+      <button class="theme-btn" data-set-theme="moroccan" title="Moroccan Tile">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1F4A52,#D87530 50%,#E8C470)"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card col-habits">
+      <div class="card-title">
+        Today's Habits
+        <span class="meta habits-progress" id="habitsProgress">—</span>
+      </div>
+      <div class="habits-grid" id="habitsList"></div>
+      <div class="clock-add">
+        <input type="text" id="habitInput" placeholder="add a habit (e.g. drink water)">
+        <button id="habitAddBtn">Add</button>
+      </div>
+      <div class="clock-suggest">resets at midnight · hover a circle to remove</div>
+    </section>
+
+    <section class="card col-clocks">
+      <div class="card-title">World Clocks <span class="meta" id="localTz"></span></div>
+      <div id="clockList"></div>
+      <div class="clock-add">
+        <input type="text" id="clockInput" placeholder="city or IANA tz">
+        <button id="clockAddBtn">Add</button>
+      </div>
+      <div class="clock-suggest">try: London, Tokyo, Paris, Mumbai, Sydney</div>
+    </section>
+
+    <section class="card col-tickers">
+      <div class="card-title">Symbols <span class="meta" id="tickerUpdated">—</span></div>
+      <div id="tickerList"></div>
+      <div class="clock-add">
+        <input type="text" id="tickerInput" placeholder="symbol (e.g. NVDA)">
+        <button id="tickerAddBtn">Add</button>
+      </div>
+      <div class="clock-suggest">stocks, ETFs, mutual funds</div>
+    </section>
+
+    <section class="card col-weather">
+      <div class="card-title">Weather <span class="meta">°F</span></div>
+      <div id="weatherList"></div>
+      <div class="clock-add">
+        <input type="text" id="weatherInput" placeholder="city, state or country">
+        <button id="weatherAddBtn">Add</button>
+      </div>
+      <div class="clock-suggest">e.g. Portland, OR · Tokyo · Paris</div>
+    </section>
+
+    <section class="card col-notes">
+      <div class="card-title">Friction Audit <span class="meta" id="notesSaved">—</span></div>
+      <textarea class="notes" id="notesBox" placeholder="Type here. It saves as you go."></textarea>
+    </section>
+
+    <section class="card col-cal">
+      <div class="card-title">Upcoming <span class="meta" id="calStatus">setup needed</span></div>
+      <div id="calList"></div>
+    </section>
+
+    <section class="card col-links">
+      <div class="card-title">Quick Links</div>
+      <div class="links-list">
+        <a href="https://docs.google.com/document/d/1nPEZVuq813bzaIuQkeWeOtvGc_ZqnI-cS9b-cohXA3s/edit?tab=t.4jmvxulbw94u" target="_blank">Google Docs Shortcuts #1 <span class="arrow">→</span></a>
+        <a href="https://docs.google.com/document/d/1OVnUaAxfEuGrZLe0kKpL368kf68axzrCMV8l-TqC3G4/edit?tab=t.gomz83m66z2o" target="_blank">Google Docs Shortcuts #2 <span class="arrow">→</span></a>
+        <a href="https://calendar.google.com" target="_blank">Google Calendar <span class="arrow">→</span></a>
+        <a href="https://mail.google.com" target="_blank">Gmail <span class="arrow">→</span></a>
+        <a href="https://drive.google.com" target="_blank">Google Drive <span class="arrow">→</span></a>
+      </div>
+    </section>
+
+    <div class="news-row">
+      <section class="card">
+        <div class="card-title">San Francisco <span class="meta">news</span></div>
+        <div class="news-list" data-news="San Francisco"><div class="news-loading">Loading…</div></div>
+      </section>
+      <section class="card">
+        <div class="card-title">Austin <span class="meta">news</span></div>
+        <div class="news-list" data-news="Austin Texas"><div class="news-loading">Loading…</div></div>
+      </section>
+      <section class="card">
+        <div class="card-title">Denver <span class="meta">news</span></div>
+        <div class="news-list" data-news="Denver Colorado"><div class="news-loading">Loading…</div></div>
+      </section>
+      <section class="card">
+        <div class="card-title">Seattle <span class="meta">news</span></div>
+        <div class="news-list" data-news="Seattle"><div class="news-loading">Loading…</div></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- footnote -->
+  <div class="footnote">open-meteo · yahoo finance · google news rss · v4.0</div>
+</div>
+
+<script>
+const CONFIG = {
+  tickers: ['SWPPX','SWSSX','SWISX','VTIVX','SWYHX','LLY','AAPL','OZEM','QQQM'],
+  weather: [
+    { name: 'San Francisco, CA', lat: 37.7749, lon: -122.4194 },
+    { name: 'New Boston, TX', lat: 33.4593, lon: -94.4155 },
+    { name: 'Los Angeles, CA', lat: 34.0522, lon: -118.2437 },
+    { name: 'Charlotte, NC', lat: 35.2271, lon: -80.8431 },
+    { name: 'Columbus, OH', lat: 39.9612, lon: -82.9988 }
+  ],
+  defaultClocks: [
+    { name: 'California', tz: 'America/Los_Angeles' },
+    { name: 'Ohio', tz: 'America/New_York' }
+  ],
+  calendarIcalUrl: ''
+};
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+const store = {
+  get: (k, fb) => { try { const v=localStorage.getItem(k); return v?JSON.parse(v):fb; } catch(e){return fb;} },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+
+function applyTheme(t) {
+  document.body.setAttribute('data-theme', t);
+  store.set('theme', t);
+  $$('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.setTheme === t));
+}
+function initTheme() {
+  const saved = store.get('theme', 'autumn');
+  applyTheme(saved);
+  $$('[data-set-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.setTheme));
+}
+
+function updateHero() {
+  const now = new Date();
+  const h = now.getHours();
+  $('#greeting').textContent = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
+  const tx = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+  $('#heroDate').textContent = tx.toLocaleDateString('en-US', {
+    weekday:'long', month:'long', day:'numeric', year:'numeric'
+  });
+  const timeStr = now.toLocaleTimeString('en-US', {
+    timeZone: 'America/Chicago', hour:'numeric', minute:'2-digit', hour12:true
+  });
+  $('#heroTime').textContent = timeStr;
+  $('#localTz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const day = now.getDate();
+  let target = new Date(now.getFullYear(), now.getMonth(), 15);
+  if (day >= 15) target = new Date(now.getFullYear(), now.getMonth(), 30);
+  if (day >= 30) target = new Date(now.getFullYear(), now.getMonth()+1, 15);
+  target.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((target - today) / 86400000);
+  const dateStr = target.toLocaleDateString('en-US', { month:'short', day:'numeric'});
+  const label = diff === 0 ? 'TODAY' : diff === 1 ? 'TOMORROW' : `${diff} days`;
+  $('#countdown').innerHTML = `invest · <b>${label}</b> · ${dateStr}`;
+}
+
+function loadClocks() { return store.get('clocks', CONFIG.defaultClocks); }
+function renderClocks() {
+  const clocks = loadClocks();
+  const list = $('#clockList');
+  list.innerHTML = '';
+  clocks.forEach((c, i) => {
+    const now = new Date();
+    let timeStr = '—';
+    try { timeStr = now.toLocaleTimeString('en-US', { timeZone: c.tz, hour:'numeric', minute:'2-digit', hour12:true }); }
+    catch(e) { timeStr = 'invalid tz'; }
+    const [t, ampm] = timeStr.split(' ');
+    const row = document.createElement('div');
+    row.className = 'clock-row';
+    row.innerHTML = `
+      <div class="clock-name">${c.name} <span class="tz">${c.tz.split('/').pop().replace(/_/g,' ')}</span></div>
+      <div>
+        <span class="clock-time">${t}<span class="ampm">${ampm||''}</span></span>
+        <button class="clock-remove" data-i="${i}" title="remove">×</button>
+      </div>`;
+    list.appendChild(row);
+  });
+  $$('.clock-remove').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; const cs = loadClocks(); cs.splice(i,1);
+    store.set('clocks', cs); renderClocks();
+  });
+}
+const CITY_TZ = {
+  'london':'Europe/London','paris':'Europe/Paris','berlin':'Europe/Berlin','madrid':'Europe/Madrid',
+  'rome':'Europe/Rome','amsterdam':'Europe/Amsterdam','moscow':'Europe/Moscow','dubai':'Asia/Dubai',
+  'mumbai':'Asia/Kolkata','india':'Asia/Kolkata','delhi':'Asia/Kolkata','bangalore':'Asia/Kolkata',
+  'tokyo':'Asia/Tokyo','japan':'Asia/Tokyo','seoul':'Asia/Seoul','beijing':'Asia/Shanghai',
+  'shanghai':'Asia/Shanghai','hong kong':'Asia/Hong_Kong','singapore':'Asia/Singapore','bangkok':'Asia/Bangkok',
+  'sydney':'Australia/Sydney','melbourne':'Australia/Melbourne','auckland':'Pacific/Auckland',
+  'honolulu':'Pacific/Honolulu','hawaii':'Pacific/Honolulu','alaska':'America/Anchorage','anchorage':'America/Anchorage',
+  'seattle':'America/Los_Angeles','los angeles':'America/Los_Angeles','san francisco':'America/Los_Angeles','california':'America/Los_Angeles',
+  'denver':'America/Denver','colorado':'America/Denver','phoenix':'America/Phoenix','arizona':'America/Phoenix',
+  'chicago':'America/Chicago','austin':'America/Chicago','dallas':'America/Chicago','houston':'America/Chicago','texas':'America/Chicago',
+  'new york':'America/New_York','nyc':'America/New_York','boston':'America/New_York','miami':'America/New_York',
+  'ohio':'America/New_York','columbus':'America/New_York','charlotte':'America/New_York',
+  'mexico city':'America/Mexico_City','sao paulo':'America/Sao_Paulo','buenos aires':'America/Argentina/Buenos_Aires',
+  'utc':'UTC','gmt':'UTC'
+};
+function addClock() {
+  const inp = $('#clockInput'); const v = inp.value.trim(); if (!v) return;
+  let tz = CITY_TZ[v.toLowerCase()];
+  if (!tz && v.includes('/')) { try { new Date().toLocaleTimeString('en-US',{timeZone:v}); tz=v; } catch(e){} }
+  if (!tz) { inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500); return; }
+  const cs = loadClocks();
+  const niceName = v.split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+  cs.push({ name: niceName, tz });
+  store.set('clocks', cs); inp.value=''; renderClocks();
+}
+
+function loadTickers() { return store.get('tickers', CONFIG.tickers); }
+
+async function fetchTickers() {
+  const symbols = loadTickers();
+  const list = $('#tickerList');
+  if (!symbols.length) {
+    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No symbols yet — add one below.</div>`;
+    $('#tickerUpdated').textContent = '—';
+    return;
+  }
+  list.innerHTML = symbols.map(t => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">loading…</span><span></span></div>`).join('');
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(',')}`;
+  const proxies = [`https://corsproxy.io/?${encodeURIComponent(url)}`, `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`];
+  let data = null;
+  for (const p of proxies) {
+    try { const r = await fetch(p); if (!r.ok) continue; data = await r.json(); if (data?.quoteResponse?.result) break; }
+    catch(e) { continue; }
+  }
+  if (!data?.quoteResponse?.result) {
+    list.innerHTML = symbols.map(t => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">unavailable</span><span></span></div>`).join('');
+    $('#tickerUpdated').textContent = 'rate limited'; return;
+  }
+  const byS = {}; data.quoteResponse.result.forEach(q => byS[q.symbol] = q);
+  list.innerHTML = symbols.map((sym, i) => {
+    const q = byS[sym];
+    if (!q) return `<div class="ticker-row"><span class="ticker-sym">${sym}</span><span class="ticker-loading">not found</span><button class="clock-remove" data-ti="${i}" title="remove">×</button></div>`;
+    const price = q.regularMarketPrice, chg = q.regularMarketChange, chgPct = q.regularMarketChangePercent;
+    const cls = chg >= 0 ? 'up' : 'down'; const sign = chg >= 0 ? '+' : '';
+    return `<div class="ticker-row">
+      <span class="ticker-sym">${sym}</span>
+      <span class="ticker-price">$${price ? price.toFixed(2) : '—'}</span>
+      <span class="ticker-change ${cls}">${sign}${chg ? chg.toFixed(2) : '0.00'} (${sign}${chgPct ? chgPct.toFixed(2) : '0.00'}%)<button class="clock-remove" data-ti="${i}" title="remove">×</button></span>
+    </div>`;
+  }).join('');
+  $('#tickerUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  $$('[data-ti]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.ti; const ts = loadTickers(); ts.splice(i,1);
+    store.set('tickers', ts); fetchTickers();
+  });
+}
+
+function addTicker() {
+  const inp = $('#tickerInput');
+  const v = inp.value.trim().toUpperCase();
+  if (!v) return;
+  if (!/^[A-Z0-9.\-^]{1,15}$/.test(v)) {
+    inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500); return;
+  }
+  const ts = loadTickers();
+  if (ts.includes(v)) { inp.value=''; return; }
+  ts.push(v);
+  store.set('tickers', ts);
+  inp.value='';
+  fetchTickers();
+}
+
+function loadWeatherCities() { return store.get('weather', CONFIG.weather); }
+
+const WEATHER_ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌦',61:'🌧',63:'🌧',65:'🌧',66:'🌧',67:'🌧',71:'🌨',73:'🌨',75:'🌨',77:'🌨',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'🌨',95:'⛈',96:'⛈',99:'⛈'};
+const WEATHER_DESC = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Heavy snow',95:'Thunderstorm',96:'Storm w/ hail',99:'Severe storm'};
+
+async function fetchWeather() {
+  const cities = loadWeatherCities();
+  const list = $('#weatherList');
+  if (!cities.length) {
+    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No cities yet — add one below.</div>`;
+    return;
+  }
+  list.innerHTML = cities.map(c => `<div class="weather-row"><div class="weather-city">${c.name}<small>loading…</small></div><span class="weather-icon">⋯</span><span class="weather-temp">—</span></div>`).join('');
+  const results = await Promise.all(cities.map(async c => {
+    try {
+      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`);
+      const d = await r.json();
+      return { ...c, temp: d.current.temperature_2m, code: d.current.weather_code };
+    } catch(e) { return { ...c, error: true }; }
+  }));
+  list.innerHTML = results.map((c, i) => {
+    if (c.error) return `<div class="weather-row"><div class="weather-city">${c.name}<small>unavailable</small></div><span class="weather-icon">—</span><span class="weather-temp">—<button class="clock-remove" data-wi="${i}" title="remove">×</button></span></div>`;
+    return `<div class="weather-row">
+      <div class="weather-city">${c.name}<small>${WEATHER_DESC[c.code]||''}</small></div>
+      <span class="weather-icon">${WEATHER_ICONS[c.code]||'·'}</span>
+      <span class="weather-temp">${Math.round(c.temp)}°<button class="clock-remove" data-wi="${i}" title="remove">×</button></span>
+    </div>`;
+  }).join('');
+  $$('[data-wi]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.wi; const cs = loadWeatherCities(); cs.splice(i,1);
+    store.set('weather', cs); fetchWeather();
+  });
+}
+
+async function addWeatherCity() {
+  const inp = $('#weatherInput');
+  const v = inp.value.trim();
+  if (!v) return;
+  const btn = $('#weatherAddBtn');
+  const originalText = btn.textContent;
+  btn.textContent = '…';
+  btn.disabled = true;
+  try {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=1&language=en&format=json`);
+    const d = await r.json();
+    if (!d.results || !d.results.length) {
+      inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500);
+      return;
+    }
+    const hit = d.results[0];
+    // Build a nice name like "Portland, OR" or "Tokyo, Japan"
+    let displayName = hit.name;
+    if (hit.admin1 && hit.country_code === 'US') {
+      const stateAbbr = US_STATE_ABBR[hit.admin1] || hit.admin1.slice(0,2).toUpperCase();
+      displayName = `${hit.name}, ${stateAbbr}`;
+    } else if (hit.country) {
+      displayName = `${hit.name}, ${hit.country}`;
+    }
+    const cs = loadWeatherCities();
+    cs.push({ name: displayName, lat: hit.latitude, lon: hit.longitude });
+    store.set('weather', cs);
+    inp.value = '';
+    fetchWeather();
+  } catch(e) {
+    inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500);
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+const US_STATE_ABBR = {
+  'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO',
+  'Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID',
+  'Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA',
+  'Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS',
+  'Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ',
+  'New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+  'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',
+  'Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA',
+  'West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'
+};
+
+/* HABITS — list of habits + daily check-off state */
+function todayKey() {
+  const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function loadHabits() { return store.get('habits', []); }
+function loadHabitState() {
+  const state = store.get('habitState', { date: '', done: {} });
+  if (state.date !== todayKey()) {
+    return { date: todayKey(), done: {} };
+  }
+  return state;
+}
+function saveHabitState(s) { store.set('habitState', s); }
+
+function makeHabitId() {
+  return 'h_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function abbrev(name) {
+  // First letter of each word (max 2 chars), uppercase. e.g. "Brush Bruno" -> "BB"
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return '·';
+  if (words.length === 1) return words[0].charAt(0).toUpperCase();
+  return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+}
+
+function renderHabits() {
+  const habits = loadHabits();
+  const state = loadHabitState();
+  saveHabitState(state); // refresh date stamp if it rolled
+  const list = $('#habitsList');
+  if (!habits.length) {
+    list.innerHTML = `<div class="habits-empty">No habits yet — add one below to start tracking.</div>`;
+    $('#habitsProgress').textContent = '—';
+    return;
+  }
+  list.innerHTML = habits.map(h => {
+    const done = !!state.done[h.id];
+    return `<div class="habit-item">
+      <button class="habit-remove" data-hr="${h.id}" title="remove habit">×</button>
+      <button class="habit-toggle ${done?'done':''}" data-ht="${h.id}" title="${escapeHtml(h.name)}"><span>${abbrev(h.name)}</span></button>
+      <div class="habit-label">${escapeHtml(h.name)}</div>
+    </div>`;
+  }).join('');
+  const doneCount = habits.filter(h => state.done[h.id]).length;
+  $('#habitsProgress').textContent = `${doneCount} / ${habits.length} today`;
+  $$('[data-ht]').forEach(b => b.onclick = () => {
+    const id = b.dataset.ht; const s = loadHabitState();
+    s.done[id] = !s.done[id]; saveHabitState(s); renderHabits();
+  });
+  $$('[data-hr]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
+    const id = b.dataset.hr;
+    if (!confirm('Remove this habit?')) return;
+    const hs = loadHabits().filter(h => h.id !== id);
+    store.set('habits', hs);
+    const s = loadHabitState(); delete s.done[id]; saveHabitState(s);
+    renderHabits();
+  });
+}
+
+function addHabit() {
+  const inp = $('#habitInput');
+  const v = inp.value.trim();
+  if (!v) return;
+  if (v.length > 40) {
+    inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500); return;
+  }
+  const hs = loadHabits();
+  hs.push({ id: makeHabitId(), name: v });
+  store.set('habits', hs);
+  inp.value = '';
+  renderHabits();
+}
+
+function initNotes() {
+  const box = $('#notesBox');
+  box.value = store.get('notes','') || '';
+  let t;
+  box.addEventListener('input', () => {
+    clearTimeout(t); $('#notesSaved').textContent = 'saving…';
+    t = setTimeout(() => { store.set('notes', box.value); $('#notesSaved').textContent = 'saved ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }, 400);
+  });
+  $('#notesSaved').textContent = box.value ? 'restored' : 'autosaves';
+}
+
+async function fetchCalendar() {
+  const list = $('#calList');
+  if (!CONFIG.calendarIcalUrl) {
+    $('#calStatus').textContent = 'not configured';
+    list.innerHTML = `<div class="cal-empty">
+      <p>To show Google Calendar events here:</p>
+      <p style="margin-top:6px">1. Calendar settings → click your calendar</p>
+      <p>2. Copy the <b>Secret address in iCal format</b></p>
+      <p>3. Paste into <code>CONFIG.calendarIcalUrl</code></p>
+      <p style="margin-top:8px"><a href="https://calendar.google.com" target="_blank">Open Calendar →</a></p>
+    </div>`; return;
+  }
+  $('#calStatus').textContent = 'loading…';
+  try {
+    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(CONFIG.calendarIcalUrl)}`);
+    const text = await r.text();
+    const events = parseIcs(text);
+    const now = new Date(); const weekOut = new Date(now.getTime()+7*86400000);
+    const upcoming = events.filter(e => e.start >= now && e.start <= weekOut).sort((a,b)=>a.start-b.start).slice(0,12);
+    if (!upcoming.length) { list.innerHTML = `<div class="cal-empty">No events in the next 7 days.</div>`; }
+    else {
+      const today = now.toDateString(); const tomorrow = new Date(now.getTime()+86400000).toDateString();
+      list.innerHTML = upcoming.map(e => {
+        const ds = e.start.toDateString();
+        let label = e.start.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+        if (ds === today) label = 'Today'; else if (ds === tomorrow) label = 'Tomorrow';
+        const timeStr = e.allDay ? 'all day' : e.start.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+        return `<div class="cal-event"><div><div class="cal-event-date">${label}</div><div class="cal-event-time">${timeStr}</div></div><div class="cal-event-title">${escapeHtml(e.summary)}</div></div>`;
+      }).join('');
+    }
+    $('#calStatus').textContent = upcoming.length + ' events';
+  } catch(e) {
+    $('#calStatus').textContent = 'error';
+    list.innerHTML = `<div class="cal-empty">Couldn't load calendar.</div>`;
+  }
+}
+function parseIcs(text) {
+  const events = [];
+  const blocks = text.split('BEGIN:VEVENT').slice(1);
+  for (const b of blocks) {
+    const block = b.split('END:VEVENT')[0];
+    const lines = block.replace(/\r\n /g,'').split(/\r?\n/);
+    const ev = {};
+    for (const line of lines) {
+      if (line.startsWith('SUMMARY:')) ev.summary = line.slice(8);
+      else if (line.startsWith('DTSTART')) {
+        const v = line.split(':')[1]; if (!v) continue;
+        if (line.includes('VALUE=DATE') || (v.length===8 && !v.includes('T'))) {
+          ev.start = new Date(+v.slice(0,4), +v.slice(4,6)-1, +v.slice(6,8)); ev.allDay = true;
+        } else { ev.start = parseIcsDate(v); ev.allDay = false; }
+      }
+    }
+    if (ev.start && ev.summary) events.push(ev);
+  }
+  return events;
+}
+function parseIcsDate(s) {
+  const y=+s.slice(0,4),mo=+s.slice(4,6)-1,d=+s.slice(6,8),h=+s.slice(9,11),mi=+s.slice(11,13),se=+s.slice(13,15)||0;
+  return s.endsWith('Z') ? new Date(Date.UTC(y,mo,d,h,mi,se)) : new Date(y,mo,d,h,mi,se);
+}
+function escapeHtml(s){return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function fetchNews() {
+  const containers = $$('.news-list[data-news]');
+  await Promise.all(containers.map(async box => {
+    const q = box.dataset.news;
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=en-US&gl=US&ceid=US:en`)}`;
+    try {
+      const r = await fetch(url); const txt = await r.text();
+      const doc = new DOMParser().parseFromString(txt, 'text/xml');
+      const items = Array.from(doc.querySelectorAll('item')).slice(0,8);
+      if (!items.length) throw new Error('empty');
+      box.innerHTML = items.map(it => {
+        const title = it.querySelector('title')?.textContent || '';
+        const link = it.querySelector('link')?.textContent || '#';
+        const source = it.querySelector('source')?.textContent || '';
+        return `<div class="news-item"><a href="${link}" target="_blank">${escapeHtml(title)}</a>${source?`<div class="news-source">${escapeHtml(source)}</div>`:''}</div>`;
+      }).join('');
+    } catch(e) {
+      box.innerHTML = `<div class="news-loading">News unavailable. Refresh in a minute.</div>`;
+    }
+  }));
+}
+
+function init() {
+  initTheme();
+  updateHero(); renderClocks(); initNotes(); renderHabits();
+  fetchTickers(); fetchWeather(); fetchCalendar(); fetchNews();
+  setInterval(() => { updateHero(); renderClocks(); renderHabits(); }, 1000 * 20);
+  setInterval(fetchTickers, 1000 * 60 * 5);
+  setInterval(fetchWeather, 1000 * 60 * 30);
+  $('#clockAddBtn').onclick = addClock;
+  $('#clockInput').addEventListener('keydown', e => { if (e.key === 'Enter') addClock(); });
+  $('#tickerAddBtn').onclick = addTicker;
+  $('#tickerInput').addEventListener('keydown', e => { if (e.key === 'Enter') addTicker(); });
+  $('#weatherAddBtn').onclick = addWeatherCity;
+  $('#weatherInput').addEventListener('keydown', e => { if (e.key === 'Enter') addWeatherCity(); });
+  $('#habitAddBtn').onclick = addHabit;
+  $('#habitInput').addEventListener('keydown', e => { if (e.key === 'Enter') addHabit(); });
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -897,15 +897,15 @@
   .habits-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 4px;
   }
   .habit-item {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     text-align: center;
   }
   .habit-toggle {
@@ -990,6 +990,11 @@
     text-transform: none;
     letter-spacing: 0;
   }
+
+  /* compact card-title and padding for habits flip card */
+  .flip-card.col-habits .flip-face { padding: 14px 18px; }
+  .flip-card.col-habits .flip-face.front { padding-bottom: 28px; }
+  .flip-card.col-habits .card-title { margin-bottom: 10px; }
 
   /* SEARCH BAR */
   .search-card {
@@ -1263,7 +1268,6 @@
   .flip-card.col-weather .flip-inner,
   .flip-card.col-links .flip-inner { min-height: 360px; }
   .flip-card.col-notes .flip-inner { min-height: 260px; }
-  .flip-card.col-habits .flip-inner { min-height: 200px; }
 
   /* Military alphabet grid */
   .nato-grid {
@@ -1761,83 +1765,65 @@ function addClock() {
 
 function loadTickers() { return store.get('tickers', CONFIG.tickers); }
 
-// Stooq returns plain CSV — no auth, no crumb cookies, CORS-friendly via proxy
-// Symbol convention: US stocks/funds need ".us" suffix on Stooq (e.g. aapl.us)
+// Yahoo Finance v8 chart endpoint — no auth/crumb required, supports stocks AND mutual funds
+async function fetchOneQuote(symbol) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`;
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+  ];
+  for (const p of proxies) {
+    try {
+      const r = await fetch(p);
+      if (!r.ok) continue;
+      const data = await r.json();
+      const result = data?.chart?.result?.[0];
+      if (!result) continue;
+      const meta = result.meta;
+      const price = meta.regularMarketPrice ?? meta.previousClose;
+      const prev = meta.chartPreviousClose ?? meta.previousClose;
+      if (!isFinite(price)) continue;
+      const chg = price - prev;
+      const chgPct = prev !== 0 ? (chg / prev) * 100 : 0;
+      return { symbol, price, chg, chgPct };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
 async function fetchTickers() {
   const symbols = loadTickers();
   const list = $('#tickerList');
   if (!symbols.length) {
-    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No symbols yet — add one below.</div>`;
+    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No symbols yet — flip the card to add some.</div>`;
     $('#tickerUpdated').textContent = '—';
+    renderTickerEdit();
     return;
   }
   list.innerHTML = symbols.map(t => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">loading…</span><span></span></div>`).join('');
 
-  // Build Stooq symbol list (lowercased, .us appended for US tickers without an exchange already)
-  const stooqSymbols = symbols.map(s => {
-    const lower = s.toLowerCase();
-    if (lower.includes('.')) return lower; // already has exchange
-    return lower + '.us';
-  }).join(',');
-
-  const stooqUrl = `https://stooq.com/q/l/?s=${stooqSymbols}&f=sd2t2ohlcv&h&e=csv`;
-  const proxies = [
-    `https://corsproxy.io/?${encodeURIComponent(stooqUrl)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(stooqUrl)}`
-  ];
-
-  let csv = null;
-  for (const p of proxies) {
-    try { const r = await fetch(p); if (!r.ok) continue; const t = await r.text(); if (t && t.toLowerCase().includes('symbol')) { csv = t; break; } }
-    catch(e) { continue; }
-  }
-
-  if (!csv) {
-    list.innerHTML = symbols.map((t,i) => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">unavailable</span><button class="clock-remove" data-ti="${i}" title="remove">×</button></div>`).join('');
-    $('#tickerUpdated').textContent = 'unavailable';
-    $$('[data-ti]').forEach(b => b.onclick = () => { const i = +b.dataset.ti; const ts = loadTickers(); ts.splice(i,1); store.set('tickers', ts); fetchTickers(); });
-    renderTickerEdit();
-    return;
-  }
-
-  // Parse CSV. Header: Symbol,Date,Time,Open,High,Low,Close,Volume
-  const lines = csv.trim().split(/\r?\n/);
-  const headers = lines[0].split(',');
-  const idx = (n) => headers.findIndex(h => h.trim().toLowerCase() === n);
-  const symI = idx('symbol'), closeI = idx('close'), openI = idx('open');
-
-  const byS = {};
-  for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(',');
-    if (parts.length < 3) continue;
-    const sym = parts[symI].trim().toLowerCase();
-    const close = parseFloat(parts[closeI]);
-    const open = parseFloat(parts[openI]);
-    if (!isFinite(close)) continue;
-    byS[sym] = { close, open };
-  }
+  const results = await Promise.all(symbols.map(s => fetchOneQuote(s)));
 
   list.innerHTML = symbols.map((sym, i) => {
-    const stooqKey = sym.toLowerCase().includes('.') ? sym.toLowerCase() : sym.toLowerCase() + '.us';
-    const q = byS[stooqKey];
-    if (!q) return `<div class="ticker-row"><span class="ticker-sym">${sym}</span><span class="ticker-loading">not found</span><button class="clock-remove" data-ti="${i}" title="remove">×</button></div>`;
-    const price = q.close;
-    const chg = isFinite(q.open) ? (q.close - q.open) : 0;
-    const chgPct = isFinite(q.open) && q.open !== 0 ? (chg / q.open) * 100 : 0;
-    const cls = chg >= 0 ? 'up' : 'down';
-    const sign = chg >= 0 ? '+' : '';
+    const q = results[i];
+    if (!q) return `<div class="ticker-row"><span class="ticker-sym">${sym}</span><span class="ticker-loading">unavailable</span><span></span></div>`;
+    const cls = q.chg >= 0 ? 'up' : 'down';
+    const sign = q.chg >= 0 ? '+' : '';
     return `<div class="ticker-row">
       <span class="ticker-sym">${sym}</span>
-      <span class="ticker-price">$${price.toFixed(2)}</span>
-      <span class="ticker-change ${cls}">${sign}${chg.toFixed(2)} (${sign}${chgPct.toFixed(2)}%)<button class="clock-remove" data-ti="${i}" title="remove">×</button></span>
+      <span class="ticker-price">$${q.price.toFixed(2)}</span>
+      <span class="ticker-change ${cls}">${sign}${q.chg.toFixed(2)} (${sign}${q.chgPct.toFixed(2)}%)</span>
     </div>`;
   }).join('');
 
-  $('#tickerUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  $$('[data-ti]').forEach(b => b.onclick = () => {
-    const i = +b.dataset.ti; const ts = loadTickers(); ts.splice(i,1);
-    store.set('tickers', ts); fetchTickers();
-  });
+  const successCount = results.filter(r => r).length;
+  if (successCount === 0) {
+    $('#tickerUpdated').textContent = 'unavailable';
+  } else if (successCount < symbols.length) {
+    $('#tickerUpdated').textContent = `${successCount}/${symbols.length} · ` + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  } else {
+    $('#tickerUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  }
   renderTickerEdit();
 }
 

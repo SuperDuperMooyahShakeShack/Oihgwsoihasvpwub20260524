@@ -697,18 +697,29 @@
   }
 
   .col-clocks, .col-tickers, .col-weather,
-  .col-notes, .col-cal, .col-links { grid-column: span 4; }
+  .col-notes, .col-cal, .col-links, .col-countdown { grid-column: span 4; }
   .col-habits { grid-column: span 12; }
+
+  /* Row order — habits, search, then row 1: notes, links, countdown ; row 2: weather, clocks, symbols */
+  .col-habits { order: 1; }
+  .search-card { order: 2; }
+  .col-notes { order: 3; }
+  .col-links { order: 4; }
+  .col-countdown { order: 5; }
+  .col-weather { order: 6; }
+  .col-clocks { order: 7; }
+  .col-tickers { order: 8; }
+  .news-row { order: 9; }
 
   @media (max-width: 1100px) {
     .col-clocks, .col-tickers, .col-weather,
-    .col-notes, .col-cal, .col-links { grid-column: span 6; }
+    .col-notes, .col-cal, .col-links, .col-countdown { grid-column: span 6; }
     .col-habits { grid-column: span 12; }
   }
   @media (max-width: 700px) {
     .page { padding: 20px; }
     .col-clocks, .col-tickers, .col-weather,
-    .col-notes, .col-cal, .col-links, .col-habits { grid-column: span 12; }
+    .col-notes, .col-cal, .col-links, .col-habits, .col-countdown { grid-column: span 12; }
   }
 
   /* CLOCKS */
@@ -799,7 +810,7 @@
     font-size: 10px; font-family: var(--mono); margin-top: 2px;
   }
   .weather-temp { font-family: var(--mono); font-size: 15px; color: var(--accent); font-weight: 500; }
-  .weather-icon { font-size: 18px; width: 26px; text-align: center; }
+  .weather-icon { width: 26px; text-align: center; display: flex; align-items: center; justify-content: center; }
 
   /* NOTES */
   textarea.notes {
@@ -882,26 +893,26 @@
   @media (max-width: 1100px) { .news-row { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 700px) { .news-row { grid-template-columns: 1fr; } }
 
-  /* HABITS */
+  /* HABITS — half size */
   .habits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 22px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
   }
   .habit-item {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 7px;
     text-align: center;
   }
   .habit-toggle {
-    width: 110px;
-    height: 110px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
-    border: 5px solid var(--accent);
+    border: 3px solid var(--accent);
     background: transparent;
     cursor: pointer;
     display: flex;
@@ -909,48 +920,52 @@
     justify-content: center;
     transition: all 0.25s ease;
     color: var(--accent);
-    font-size: 42px;
-    font-weight: 700;
-    font-family: var(--display);
     user-select: none;
     -webkit-user-select: none;
-    line-height: 1;
+    padding: 0;
   }
   .habit-toggle:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
   .habit-toggle.done {
     background: var(--accent);
     border-color: var(--accent);
     color: var(--bg);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+  .habit-toggle svg { width: 26px; height: 26px; }
+  .habit-toggle .habit-init {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--display);
+    line-height: 1;
   }
   .habit-label {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--text);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     line-height: 1.25;
     word-break: break-word;
-    max-width: 130px;
+    max-width: 90px;
   }
   .habit-remove {
     position: absolute;
-    top: -2px;
+    top: -3px;
     right: 50%;
-    transform: translateX(65px);
+    transform: translateX(35px);
     background: var(--bg-elev);
     border: 1px solid var(--border-soft);
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-faint);
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.15s, color 0.15s, border-color 0.15s;
@@ -959,15 +974,12 @@
     z-index: 2;
   }
   .habit-item:hover .habit-remove { opacity: 1; }
-  .habit-remove:hover {
-    color: var(--red);
-    border-color: var(--red);
-  }
+  .habit-remove:hover { color: var(--red); border-color: var(--red); }
   .habits-empty {
     color: var(--text-faint);
     font-style: italic;
-    font-size: 13px;
-    padding: 24px 0;
+    font-size: 12px;
+    padding: 14px 0;
     text-align: center;
     grid-column: 1 / -1;
   }
@@ -977,6 +989,299 @@
     color: var(--text-faint);
     text-transform: none;
     letter-spacing: 0;
+  }
+
+  /* SEARCH BAR */
+  .search-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--card-radius);
+    padding: 14px 16px;
+    grid-column: span 12;
+    transition: background-color 0.4s, border-color 0.4s;
+  }
+  .search-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .search-form svg {
+    width: 18px; height: 18px;
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+  .search-form input {
+    flex: 1;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+  }
+  .search-form input:focus { outline: none; border-color: var(--accent); }
+  .search-form button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+    height: 40px;
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .search-form button:hover { background: var(--accent-warm); }
+
+  /* COUNTDOWN */
+  .countdown-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border-soft);
+    gap: 12px;
+  }
+  .countdown-row:last-of-type { border-bottom: none; }
+  .countdown-name { font-size: 13px; color: var(--text); }
+  .countdown-name small {
+    display: block;
+    color: var(--text-faint);
+    font-size: 10px;
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+  .countdown-days {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .countdown-days .unit {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: 3px;
+  }
+  .countdown-days.past { color: var(--text-faint); font-style: italic; }
+  .countdown-add {
+    display: grid;
+    grid-template-columns: 1fr 130px auto;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .countdown-add input {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 12px;
+  }
+  .countdown-add input:focus { outline: none; border-color: var(--accent); }
+  .countdown-add button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 0 14px;
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .countdown-add button:hover { background: var(--accent-warm); }
+
+  /* EDITABLE LINKS */
+  .links-list .link-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .links-list .link-row a { flex: 1; margin-bottom: 0; }
+  .link-delete {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    width: 28px;
+    height: 36px;
+    color: var(--text-faint);
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .link-row:hover .link-delete { opacity: 1; }
+  .link-delete:hover { color: var(--red); border-color: var(--red); }
+  .link-add {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .link-add input {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 12px;
+    min-width: 0;
+  }
+  .link-add input:focus { outline: none; border-color: var(--accent); }
+  .link-add button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 0 14px;
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .link-add button:hover { background: var(--accent-warm); }
+
+  /* WEATHER ICONS — SVG, themed */
+  .weather-icon svg { width: 24px; height: 24px; vertical-align: middle; color: var(--accent); }
+
+  /* Edit list (back of flip card) */
+  .edit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border-soft);
+    font-size: 13px;
+    color: var(--text);
+  }
+  .edit-row:last-child { border-bottom: none; }
+  .edit-row .edit-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-row .edit-del {
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 6px;
+    transition: color 0.15s;
+  }
+  .edit-row .edit-del:hover { color: var(--red); }
+  .edit-empty {
+    color: var(--text-faint);
+    font-style: italic;
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  /* FLIP CARDS — 3D flip mechanism */
+  .flip-card {
+    perspective: 1500px;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+    min-height: 100%;
+  }
+  .flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-face {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--card-radius);
+    padding: 18px 20px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+  }
+  .flip-face.front {
+    position: relative;
+    padding-bottom: 38px;
+  }
+  .flip-face.back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 38px;
+  }
+  .flip-btn {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    color: var(--text-faint);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 5;
+    opacity: 0.55;
+    transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .flip-btn:hover {
+    opacity: 1;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .flip-btn svg { width: 12px; height: 12px; }
+  .flip-back-title {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .flip-card.col-clocks .flip-inner,
+  .flip-card.col-tickers .flip-inner,
+  .flip-card.col-weather .flip-inner,
+  .flip-card.col-links .flip-inner { min-height: 360px; }
+  .flip-card.col-notes .flip-inner { min-height: 260px; }
+  .flip-card.col-habits .flip-inner { min-height: 200px; }
+
+  /* Military alphabet grid */
+  .nato-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .nato-grid .letter {
+    font-weight: 600;
+    color: var(--accent);
+    width: 16px;
+    display: inline-block;
+  }
+  .nato-grid .word {
+    color: var(--text);
   }
   .theme-bar {
     margin: 0 0 24px;
@@ -1049,7 +1354,6 @@
     <div class="hero-greeting">good <span id="greeting">morning</span></div>
     <h1 class="hero-date" id="heroDate">—</h1>
     <div class="hero-time" id="heroTime">—</div>
-    <div class="hero-countdown" id="countdown">Loading…</div>
   </section>
 
   <!-- THEME SWITCHER (dots only) -->
@@ -1116,67 +1420,191 @@
   </div>
 
   <div class="grid">
-    <section class="card col-habits">
-      <div class="card-title">
-        Today's Habits
-        <span class="meta habits-progress" id="habitsProgress">—</span>
+    <section class="card flip-card col-habits" id="habitsCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">
+            Habits
+            <span class="meta habits-progress" id="habitsProgress">—</span>
+          </div>
+          <div class="habits-grid" id="habitsList"></div>
+          <button class="flip-btn" data-flip="habitsCard" title="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">Edit Habits</div>
+          <div class="clock-add">
+            <input type="text" id="habitInput" placeholder="add a habit (e.g. drink water)">
+            <button id="habitAddBtn">Add</button>
+          </div>
+          <div class="clock-suggest" style="margin-bottom:12px">resets at midnight</div>
+          <div id="habitsListEdit"></div>
+          <button class="flip-btn" data-flip="habitsCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="habits-grid" id="habitsList"></div>
-      <div class="clock-add">
-        <input type="text" id="habitInput" placeholder="add a habit (e.g. drink water)">
-        <button id="habitAddBtn">Add</button>
+    </section>
+
+    <section class="search-card">
+      <div class="search-form">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="search Google" autocomplete="off">
+        <button id="searchBtn">Search</button>
       </div>
-      <div class="clock-suggest">resets at midnight · hover a circle to remove</div>
     </section>
 
-    <section class="card col-clocks">
-      <div class="card-title">World Clocks <span class="meta" id="localTz"></span></div>
-      <div id="clockList"></div>
-      <div class="clock-add">
-        <input type="text" id="clockInput" placeholder="city or IANA tz">
-        <button id="clockAddBtn">Add</button>
+    <section class="card flip-card col-links" id="linksCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">Quick Links</div>
+          <div class="links-list" id="linksList"></div>
+          <button class="flip-btn" data-flip="linksCard" title="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">Edit Links</div>
+          <div class="link-add">
+            <input type="text" id="linkLabelInput" placeholder="name">
+            <input type="url" id="linkUrlInput" placeholder="https://...">
+            <button id="linkAddBtn">Add</button>
+          </div>
+          <div class="clock-suggest" style="margin-bottom:12px">add as many as you like</div>
+          <div id="linksListEdit"></div>
+          <button class="flip-btn" data-flip="linksCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="clock-suggest">try: London, Tokyo, Paris, Mumbai, Sydney</div>
     </section>
 
-    <section class="card col-tickers">
-      <div class="card-title">Symbols <span class="meta" id="tickerUpdated">—</span></div>
-      <div id="tickerList"></div>
-      <div class="clock-add">
-        <input type="text" id="tickerInput" placeholder="symbol (e.g. NVDA)">
-        <button id="tickerAddBtn">Add</button>
+    <section class="card flip-card col-clocks" id="clocksCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">World Clocks <span class="meta" id="localTz"></span></div>
+          <div id="clockList"></div>
+          <button class="flip-btn" data-flip="clocksCard" title="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">Edit Clocks</div>
+          <div class="clock-add">
+            <input type="text" id="clockInput" placeholder="city or IANA tz">
+            <button id="clockAddBtn">Add</button>
+          </div>
+          <div class="clock-suggest" style="margin-bottom:12px">try: London, Tokyo, Paris, Mumbai, Sydney</div>
+          <div id="clockListEdit"></div>
+          <button class="flip-btn" data-flip="clocksCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="clock-suggest">stocks, ETFs, mutual funds</div>
     </section>
 
-    <section class="card col-weather">
-      <div class="card-title">Weather <span class="meta">°F</span></div>
-      <div id="weatherList"></div>
-      <div class="clock-add">
-        <input type="text" id="weatherInput" placeholder="city, state or country">
-        <button id="weatherAddBtn">Add</button>
+    <section class="card flip-card col-tickers" id="tickersCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">Symbols <span class="meta" id="tickerUpdated">—</span></div>
+          <div id="tickerList"></div>
+          <button class="flip-btn" data-flip="tickersCard" title="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">Edit Symbols</div>
+          <div class="clock-add">
+            <input type="text" id="tickerInput" placeholder="symbol (e.g. NVDA)">
+            <button id="tickerAddBtn">Add</button>
+          </div>
+          <div class="clock-suggest" style="margin-bottom:12px">stocks, ETFs, mutual funds</div>
+          <div id="tickerListEdit"></div>
+          <button class="flip-btn" data-flip="tickersCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
       </div>
-      <div class="clock-suggest">e.g. Portland, OR · Tokyo · Paris</div>
     </section>
 
-    <section class="card col-notes">
-      <div class="card-title">Friction Audit <span class="meta" id="notesSaved">—</span></div>
-      <textarea class="notes" id="notesBox" placeholder="Type here. It saves as you go."></textarea>
+    <section class="card flip-card col-weather" id="weatherCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">Weather <span class="meta">°F</span></div>
+          <div id="weatherList"></div>
+          <button class="flip-btn" data-flip="weatherCard" title="edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">Edit Cities</div>
+          <div class="clock-add">
+            <input type="text" id="weatherInput" placeholder="city, state or country">
+            <button id="weatherAddBtn">Add</button>
+          </div>
+          <div class="clock-suggest" style="margin-bottom:12px">e.g. Portland, OR · Tokyo · Paris</div>
+          <div id="weatherListEdit"></div>
+          <button class="flip-btn" data-flip="weatherCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <section class="card col-cal">
-      <div class="card-title">Upcoming <span class="meta" id="calStatus">setup needed</span></div>
-      <div id="calList"></div>
+    <section class="card flip-card col-notes" id="notesCard">
+      <div class="flip-inner">
+        <div class="flip-face front">
+          <div class="card-title">Friction Audit <span class="meta" id="notesSaved">—</span></div>
+          <textarea class="notes" id="notesBox" placeholder="Type here. It saves as you go."></textarea>
+          <button class="flip-btn" data-flip="notesCard" title="NATO phonetic alphabet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+          </button>
+        </div>
+        <div class="flip-face back">
+          <div class="flip-back-title">NATO Phonetic Alphabet</div>
+          <div class="nato-grid">
+            <div><span class="letter">A</span> <span class="word">Alpha</span></div>
+            <div><span class="letter">N</span> <span class="word">November</span></div>
+            <div><span class="letter">B</span> <span class="word">Bravo</span></div>
+            <div><span class="letter">O</span> <span class="word">Oscar</span></div>
+            <div><span class="letter">C</span> <span class="word">Charlie</span></div>
+            <div><span class="letter">P</span> <span class="word">Papa</span></div>
+            <div><span class="letter">D</span> <span class="word">Delta</span></div>
+            <div><span class="letter">Q</span> <span class="word">Quebec</span></div>
+            <div><span class="letter">E</span> <span class="word">Echo</span></div>
+            <div><span class="letter">R</span> <span class="word">Romeo</span></div>
+            <div><span class="letter">F</span> <span class="word">Foxtrot</span></div>
+            <div><span class="letter">S</span> <span class="word">Sierra</span></div>
+            <div><span class="letter">G</span> <span class="word">Golf</span></div>
+            <div><span class="letter">T</span> <span class="word">Tango</span></div>
+            <div><span class="letter">H</span> <span class="word">Hotel</span></div>
+            <div><span class="letter">U</span> <span class="word">Uniform</span></div>
+            <div><span class="letter">I</span> <span class="word">India</span></div>
+            <div><span class="letter">V</span> <span class="word">Victor</span></div>
+            <div><span class="letter">J</span> <span class="word">Juliet</span></div>
+            <div><span class="letter">W</span> <span class="word">Whiskey</span></div>
+            <div><span class="letter">K</span> <span class="word">Kilo</span></div>
+            <div><span class="letter">X</span> <span class="word">X-ray</span></div>
+            <div><span class="letter">L</span> <span class="word">Lima</span></div>
+            <div><span class="letter">Y</span> <span class="word">Yankee</span></div>
+            <div><span class="letter">M</span> <span class="word">Mike</span></div>
+            <div><span class="letter">Z</span> <span class="word">Zulu</span></div>
+          </div>
+          <button class="flip-btn" data-flip="notesCard" title="back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <section class="card col-links">
-      <div class="card-title">Quick Links</div>
-      <div class="links-list">
-        <a href="https://docs.google.com/document/d/1nPEZVuq813bzaIuQkeWeOtvGc_ZqnI-cS9b-cohXA3s/edit?tab=t.4jmvxulbw94u" target="_blank">Google Docs Shortcuts #1 <span class="arrow">→</span></a>
-        <a href="https://docs.google.com/document/d/1OVnUaAxfEuGrZLe0kKpL368kf68axzrCMV8l-TqC3G4/edit?tab=t.gomz83m66z2o" target="_blank">Google Docs Shortcuts #2 <span class="arrow">→</span></a>
-        <a href="https://calendar.google.com" target="_blank">Google Calendar <span class="arrow">→</span></a>
-        <a href="https://mail.google.com" target="_blank">Gmail <span class="arrow">→</span></a>
-        <a href="https://drive.google.com" target="_blank">Google Drive <span class="arrow">→</span></a>
+    <section class="card col-countdown">
+      <div class="card-title">Countdown <span class="meta" id="countdownProgress">—</span></div>
+      <div id="countdownList"></div>
+      <div class="countdown-add">
+        <input type="text" id="cdNameInput" placeholder="event name">
+        <input type="date" id="cdDateInput">
+        <button id="cdAddBtn">Add</button>
       </div>
     </section>
 
@@ -1186,16 +1614,16 @@
         <div class="news-list" data-news="San Francisco"><div class="news-loading">Loading…</div></div>
       </section>
       <section class="card">
-        <div class="card-title">Austin <span class="meta">news</span></div>
-        <div class="news-list" data-news="Austin Texas"><div class="news-loading">Loading…</div></div>
+        <div class="card-title">Austin <span class="meta">chronicle</span></div>
+        <div class="news-list" data-feed="https://www.austinchronicle.com/feed" data-source="Austin Chronicle"><div class="news-loading">Loading…</div></div>
       </section>
       <section class="card">
-        <div class="card-title">Denver <span class="meta">news</span></div>
-        <div class="news-list" data-news="Denver Colorado"><div class="news-loading">Loading…</div></div>
+        <div class="card-title">Denver <span class="meta">7</span></div>
+        <div class="news-list" data-feed="https://www.denver7.com/news.rss" data-source="Denver7"><div class="news-loading">Loading…</div></div>
       </section>
       <section class="card">
-        <div class="card-title">Seattle <span class="meta">news</span></div>
-        <div class="news-list" data-news="Seattle"><div class="news-loading">Loading…</div></div>
+        <div class="card-title">Seattle <span class="meta">king 5</span></div>
+        <div class="news-list" data-feed="https://www.king5.com/feeds/syndication/rss/news" data-source="KING 5"><div class="news-loading">Loading…</div></div>
       </section>
     </div>
   </div>
@@ -1218,7 +1646,13 @@ const CONFIG = {
     { name: 'California', tz: 'America/Los_Angeles' },
     { name: 'Ohio', tz: 'America/New_York' }
   ],
-  calendarIcalUrl: ''
+  defaultLinks: [
+    { label: 'Google Docs Shortcuts #1', url: 'https://docs.google.com/document/d/1nPEZVuq813bzaIuQkeWeOtvGc_ZqnI-cS9b-cohXA3s/edit?tab=t.4jmvxulbw94u' },
+    { label: 'Google Docs Shortcuts #2', url: 'https://docs.google.com/document/d/1OVnUaAxfEuGrZLe0kKpL368kf68axzrCMV8l-TqC3G4/edit?tab=t.gomz83m66z2o' },
+    { label: 'Google Calendar', url: 'https://calendar.google.com' },
+    { label: 'Gmail', url: 'https://mail.google.com' },
+    { label: 'Google Drive', url: 'https://drive.google.com' }
+  ]
 };
 
 const $ = (s, el=document) => el.querySelector(s);
@@ -1252,17 +1686,6 @@ function updateHero() {
   });
   $('#heroTime').textContent = timeStr;
   $('#localTz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  const day = now.getDate();
-  let target = new Date(now.getFullYear(), now.getMonth(), 15);
-  if (day >= 15) target = new Date(now.getFullYear(), now.getMonth(), 30);
-  if (day >= 30) target = new Date(now.getFullYear(), now.getMonth()+1, 15);
-  target.setHours(0,0,0,0);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.round((target - today) / 86400000);
-  const dateStr = target.toLocaleDateString('en-US', { month:'short', day:'numeric'});
-  const label = diff === 0 ? 'TODAY' : diff === 1 ? 'TOMORROW' : `${diff} days`;
-  $('#countdown').innerHTML = `invest · <b>${label}</b> · ${dateStr}`;
 }
 
 function loadClocks() { return store.get('clocks', CONFIG.defaultClocks); }
@@ -1288,6 +1711,24 @@ function renderClocks() {
   });
   $$('.clock-remove').forEach(b => b.onclick = () => {
     const i = +b.dataset.i; const cs = loadClocks(); cs.splice(i,1);
+    store.set('clocks', cs); renderClocks();
+  });
+  renderClockEdit();
+}
+
+function renderClockEdit() {
+  const clocks = loadClocks();
+  const list = $('#clockListEdit');
+  if (!list) return;
+  if (!clocks.length) { list.innerHTML = `<div class="edit-empty">No clocks yet.</div>`; return; }
+  list.innerHTML = clocks.map((c, i) => `
+    <div class="edit-row">
+      <span class="edit-name">${escapeHtml(c.name)} <span style="color:var(--text-faint);font-family:var(--mono);font-size:10px;margin-left:4px">${c.tz}</span></span>
+      <button class="edit-del" data-ce="${i}" title="remove">×</button>
+    </div>
+  `).join('');
+  $$('[data-ce]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.ce; const cs = loadClocks(); cs.splice(i,1);
     store.set('clocks', cs); renderClocks();
   });
 }
@@ -1320,6 +1761,8 @@ function addClock() {
 
 function loadTickers() { return store.get('tickers', CONFIG.tickers); }
 
+// Stooq returns plain CSV — no auth, no crumb cookies, CORS-friendly via proxy
+// Symbol convention: US stocks/funds need ".us" suffix on Stooq (e.g. aapl.us)
 async function fetchTickers() {
   const symbols = loadTickers();
   const list = $('#tickerList');
@@ -1329,33 +1772,89 @@ async function fetchTickers() {
     return;
   }
   list.innerHTML = symbols.map(t => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">loading…</span><span></span></div>`).join('');
-  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols.join(',')}`;
-  const proxies = [`https://corsproxy.io/?${encodeURIComponent(url)}`, `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`];
-  let data = null;
+
+  // Build Stooq symbol list (lowercased, .us appended for US tickers without an exchange already)
+  const stooqSymbols = symbols.map(s => {
+    const lower = s.toLowerCase();
+    if (lower.includes('.')) return lower; // already has exchange
+    return lower + '.us';
+  }).join(',');
+
+  const stooqUrl = `https://stooq.com/q/l/?s=${stooqSymbols}&f=sd2t2ohlcv&h&e=csv`;
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(stooqUrl)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(stooqUrl)}`
+  ];
+
+  let csv = null;
   for (const p of proxies) {
-    try { const r = await fetch(p); if (!r.ok) continue; data = await r.json(); if (data?.quoteResponse?.result) break; }
+    try { const r = await fetch(p); if (!r.ok) continue; const t = await r.text(); if (t && t.toLowerCase().includes('symbol')) { csv = t; break; } }
     catch(e) { continue; }
   }
-  if (!data?.quoteResponse?.result) {
-    list.innerHTML = symbols.map(t => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">unavailable</span><span></span></div>`).join('');
-    $('#tickerUpdated').textContent = 'rate limited'; return;
+
+  if (!csv) {
+    list.innerHTML = symbols.map((t,i) => `<div class="ticker-row"><span class="ticker-sym">${t}</span><span class="ticker-loading">unavailable</span><button class="clock-remove" data-ti="${i}" title="remove">×</button></div>`).join('');
+    $('#tickerUpdated').textContent = 'unavailable';
+    $$('[data-ti]').forEach(b => b.onclick = () => { const i = +b.dataset.ti; const ts = loadTickers(); ts.splice(i,1); store.set('tickers', ts); fetchTickers(); });
+    renderTickerEdit();
+    return;
   }
-  const byS = {}; data.quoteResponse.result.forEach(q => byS[q.symbol] = q);
+
+  // Parse CSV. Header: Symbol,Date,Time,Open,High,Low,Close,Volume
+  const lines = csv.trim().split(/\r?\n/);
+  const headers = lines[0].split(',');
+  const idx = (n) => headers.findIndex(h => h.trim().toLowerCase() === n);
+  const symI = idx('symbol'), closeI = idx('close'), openI = idx('open');
+
+  const byS = {};
+  for (let i = 1; i < lines.length; i++) {
+    const parts = lines[i].split(',');
+    if (parts.length < 3) continue;
+    const sym = parts[symI].trim().toLowerCase();
+    const close = parseFloat(parts[closeI]);
+    const open = parseFloat(parts[openI]);
+    if (!isFinite(close)) continue;
+    byS[sym] = { close, open };
+  }
+
   list.innerHTML = symbols.map((sym, i) => {
-    const q = byS[sym];
+    const stooqKey = sym.toLowerCase().includes('.') ? sym.toLowerCase() : sym.toLowerCase() + '.us';
+    const q = byS[stooqKey];
     if (!q) return `<div class="ticker-row"><span class="ticker-sym">${sym}</span><span class="ticker-loading">not found</span><button class="clock-remove" data-ti="${i}" title="remove">×</button></div>`;
-    const price = q.regularMarketPrice, chg = q.regularMarketChange, chgPct = q.regularMarketChangePercent;
-    const cls = chg >= 0 ? 'up' : 'down'; const sign = chg >= 0 ? '+' : '';
+    const price = q.close;
+    const chg = isFinite(q.open) ? (q.close - q.open) : 0;
+    const chgPct = isFinite(q.open) && q.open !== 0 ? (chg / q.open) * 100 : 0;
+    const cls = chg >= 0 ? 'up' : 'down';
+    const sign = chg >= 0 ? '+' : '';
     return `<div class="ticker-row">
       <span class="ticker-sym">${sym}</span>
-      <span class="ticker-price">$${price ? price.toFixed(2) : '—'}</span>
-      <span class="ticker-change ${cls}">${sign}${chg ? chg.toFixed(2) : '0.00'} (${sign}${chgPct ? chgPct.toFixed(2) : '0.00'}%)<button class="clock-remove" data-ti="${i}" title="remove">×</button></span>
+      <span class="ticker-price">$${price.toFixed(2)}</span>
+      <span class="ticker-change ${cls}">${sign}${chg.toFixed(2)} (${sign}${chgPct.toFixed(2)}%)<button class="clock-remove" data-ti="${i}" title="remove">×</button></span>
     </div>`;
   }).join('');
+
   $('#tickerUpdated').textContent = 'updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   $$('[data-ti]').forEach(b => b.onclick = () => {
     const i = +b.dataset.ti; const ts = loadTickers(); ts.splice(i,1);
     store.set('tickers', ts); fetchTickers();
+  });
+  renderTickerEdit();
+}
+
+function renderTickerEdit() {
+  const ts = loadTickers();
+  const list = $('#tickerListEdit');
+  if (!list) return;
+  if (!ts.length) { list.innerHTML = `<div class="edit-empty">No symbols yet.</div>`; return; }
+  list.innerHTML = ts.map((s, i) => `
+    <div class="edit-row">
+      <span class="edit-name" style="font-family:var(--mono);font-weight:500">${escapeHtml(s)}</span>
+      <button class="edit-del" data-te="${i}" title="remove">×</button>
+    </div>
+  `).join('');
+  $$('[data-te]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.te; const ts2 = loadTickers(); ts2.splice(i,1);
+    store.set('tickers', ts2); fetchTickers();
   });
 }
 
@@ -1376,7 +1875,28 @@ function addTicker() {
 
 function loadWeatherCities() { return store.get('weather', CONFIG.weather); }
 
-const WEATHER_ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌦',61:'🌧',63:'🌧',65:'🌧',66:'🌧',67:'🌧',71:'🌨',73:'🌨',75:'🌨',77:'🌨',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'🌨',95:'⛈',96:'⛈',99:'⛈'};
+// SVG weather icons — solid filled style, take on theme accent color via currentColor
+const WX_SVG = {
+  sun: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="11"/><g><rect x="29" y="5" width="6" height="10" rx="3"/><rect x="29" y="49" width="6" height="10" rx="3"/><rect x="5" y="29" width="10" height="6" rx="3"/><rect x="49" y="29" width="10" height="6" rx="3"/><rect x="11" y="11" width="6" height="12" rx="3" transform="rotate(-45 14 17)"/><rect x="47" y="11" width="6" height="12" rx="3" transform="rotate(45 50 17)"/><rect x="11" y="41" width="6" height="12" rx="3" transform="rotate(45 14 47)"/><rect x="47" y="41" width="6" height="12" rx="3" transform="rotate(-45 50 47)"/></g></svg>',
+  partly: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="20" r="9"/><rect x="20" y="3" width="4" height="7" rx="2"/><rect x="3" y="18" width="7" height="4" rx="2"/><rect x="8" y="6" width="4" height="8" rx="2" transform="rotate(-45 10 10)"/><rect x="32" y="6" width="4" height="8" rx="2" transform="rotate(45 34 10)"/><path d="M48 50c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C44.6 30.5 40.6 28 36 28c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C20.7 41.4 18 44.4 18 48c0 4.4 3.6 8 8 8h22z"/></svg>',
+  cloud: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 46c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 26.5 42.6 24 38 24c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 37.4 20 40.4 20 44c0 4.4 3.6 8 8 8h22z"/></svg>',
+  fog: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 36c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 16.5 42.6 14 38 14c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 27.4 20 30.4 20 34c0 4.4 3.6 8 8 8h22z"/><rect x="8" y="48" width="48" height="4" rx="2"/><rect x="14" y="56" width="36" height="4" rx="2"/></svg>',
+  rain: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 38c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 18.5 42.6 16 38 16c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 29.4 20 32.4 20 36c0 4.4 3.6 8 8 8h22z"/><path d="M24 48c-1 2-2.5 5-2.5 6.5 0 1.4 1.1 2.5 2.5 2.5s2.5-1.1 2.5-2.5C26.5 53 25 50 24 48zM34 50c-1 2-2.5 5-2.5 6.5 0 1.4 1.1 2.5 2.5 2.5s2.5-1.1 2.5-2.5C36.5 55 35 52 34 50zM44 48c-1 2-2.5 5-2.5 6.5 0 1.4 1.1 2.5 2.5 2.5s2.5-1.1 2.5-2.5C46.5 53 45 50 44 48z"/></svg>',
+  drizzle: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 38c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 18.5 42.6 16 38 16c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 29.4 20 32.4 20 36c0 4.4 3.6 8 8 8h22z"/><circle cx="26" cy="52" r="2"/><circle cx="36" cy="55" r="2"/><circle cx="46" cy="52" r="2"/></svg>',
+  snow: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 38c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 18.5 42.6 16 38 16c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 29.4 20 32.4 20 36c0 4.4 3.6 8 8 8h22z"/><g><circle cx="24" cy="53" r="3"/><circle cx="34" cy="56" r="3"/><circle cx="44" cy="53" r="3"/></g></svg>',
+  storm: '<svg viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M50 36c4.4 0 8-3.6 8-8s-3.6-8-8-8c-.6 0-1.2.1-1.8.2C46.6 16.5 42.6 14 38 14c-6.6 0-12 5.4-12 12 0 .3 0 .6.1.9C22.7 27.4 20 30.4 20 34c0 4.4 3.6 8 8 8h22z"/><path d="M32 42l-8 13h7l-3 9 11-15h-7l4-7z"/></svg>'
+};
+const WEATHER_ICONS = {
+  0: WX_SVG.sun, 1: WX_SVG.partly, 2: WX_SVG.partly, 3: WX_SVG.cloud,
+  45: WX_SVG.fog, 48: WX_SVG.fog,
+  51: WX_SVG.drizzle, 53: WX_SVG.drizzle, 55: WX_SVG.drizzle,
+  61: WX_SVG.rain, 63: WX_SVG.rain, 65: WX_SVG.rain,
+  66: WX_SVG.rain, 67: WX_SVG.rain,
+  71: WX_SVG.snow, 73: WX_SVG.snow, 75: WX_SVG.snow, 77: WX_SVG.snow,
+  80: WX_SVG.rain, 81: WX_SVG.rain, 82: WX_SVG.storm,
+  85: WX_SVG.snow, 86: WX_SVG.snow,
+  95: WX_SVG.storm, 96: WX_SVG.storm, 99: WX_SVG.storm
+};
 const WEATHER_DESC = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Heavy snow',95:'Thunderstorm',96:'Storm w/ hail',99:'Severe storm'};
 
 async function fetchWeather() {
@@ -1386,7 +1906,7 @@ async function fetchWeather() {
     list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No cities yet — add one below.</div>`;
     return;
   }
-  list.innerHTML = cities.map(c => `<div class="weather-row"><div class="weather-city">${c.name}<small>loading…</small></div><span class="weather-icon">⋯</span><span class="weather-temp">—</span></div>`).join('');
+  list.innerHTML = cities.map(c => `<div class="weather-row"><div class="weather-city">${c.name}<small>loading…</small></div><span class="weather-icon"></span><span class="weather-temp">—</span></div>`).join('');
   const results = await Promise.all(cities.map(async c => {
     try {
       const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`);
@@ -1395,16 +1915,34 @@ async function fetchWeather() {
     } catch(e) { return { ...c, error: true }; }
   }));
   list.innerHTML = results.map((c, i) => {
-    if (c.error) return `<div class="weather-row"><div class="weather-city">${c.name}<small>unavailable</small></div><span class="weather-icon">—</span><span class="weather-temp">—<button class="clock-remove" data-wi="${i}" title="remove">×</button></span></div>`;
+    if (c.error) return `<div class="weather-row"><div class="weather-city">${c.name}<small>unavailable</small></div><span class="weather-icon"></span><span class="weather-temp">—<button class="clock-remove" data-wi="${i}" title="remove">×</button></span></div>`;
     return `<div class="weather-row">
       <div class="weather-city">${c.name}<small>${WEATHER_DESC[c.code]||''}</small></div>
-      <span class="weather-icon">${WEATHER_ICONS[c.code]||'·'}</span>
+      <span class="weather-icon">${WEATHER_ICONS[c.code]||WX_SVG.cloud}</span>
       <span class="weather-temp">${Math.round(c.temp)}°<button class="clock-remove" data-wi="${i}" title="remove">×</button></span>
     </div>`;
   }).join('');
   $$('[data-wi]').forEach(b => b.onclick = () => {
     const i = +b.dataset.wi; const cs = loadWeatherCities(); cs.splice(i,1);
     store.set('weather', cs); fetchWeather();
+  });
+  renderWeatherEdit();
+}
+
+function renderWeatherEdit() {
+  const cs = loadWeatherCities();
+  const list = $('#weatherListEdit');
+  if (!list) return;
+  if (!cs.length) { list.innerHTML = `<div class="edit-empty">No cities yet.</div>`; return; }
+  list.innerHTML = cs.map((c, i) => `
+    <div class="edit-row">
+      <span class="edit-name">${escapeHtml(c.name)}</span>
+      <button class="edit-del" data-we="${i}" title="remove">×</button>
+    </div>
+  `).join('');
+  $$('[data-we]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.we; const cs2 = loadWeatherCities(); cs2.splice(i,1);
+    store.set('weather', cs2); fetchWeather();
   });
 }
 
@@ -1458,6 +1996,50 @@ const US_STATE_ABBR = {
 };
 
 /* HABITS — list of habits + daily check-off state */
+
+// Icon library: keyword → SVG. First match wins.
+const HABIT_ICONS = {
+  music: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 17V5l12-2v12"/><circle cx="6" cy="17" r="3" fill="currentColor"/><circle cx="18" cy="15" r="3" fill="currentColor"/><path d="M9 5l12-2" stroke="currentColor" stroke-width="2" fill="none"/></svg>',
+  drop: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5s-6.5 7-6.5 12a6.5 6.5 0 0 0 13 0c0-5-6.5-12-6.5-12z"/></svg>',
+  food: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 2v8a4 4 0 0 0 8 0V2M9 2v20M19 2v20M16 2c-1.5 0-3 1-3 4v6h6V6c0-3-1.5-4-3-4z"/></svg>',
+  dog: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 7l2-4 3 2 3-1 3 1 3-2 2 4v3a2 2 0 0 1-1 1.7v6.3a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-6.3A2 2 0 0 1 4 10V7zm6 7h.01M14 14h.01M9 18c1 1 4 1 6 0"/></svg>',
+  muscle: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12c2-3 5-4 8-3 0-3 2-5 5-5s5 2 5 5c0 4-3 6-5 7 1 3-1 6-5 6-5 0-9-4-8-10z"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  meditate: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.5"/><path d="M5 20c0-3 3-5 7-5s7 2 7 5M8 12l-3 3M16 12l3 3"/></svg>',
+  run: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="17" cy="4" r="2"/><path d="M15.5 6.5L12 10l-4-2-3 4 2 2 3-1 2 3-2 5h2l3-5 4 2 1-3-3-2 2-4z"/></svg>',
+  sleep: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5a8 8 0 0 1-10.5-10.5A9 9 0 1 0 20 14.5z"/></svg>',
+  pill: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.5 20.5a5 5 0 0 1-7-7l10-10a5 5 0 0 1 7 7zM8.5 8.5l7 7"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 4 1 6 3 2-2 4-3 6-3 3.5 0 5 4 3.5 7C19 16.5 12 21 12 21z"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>',
+  brush: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 21h18v-2H3zM5 17h14l-1-6H6zM6 9V4h12v5"/></svg>'
+};
+
+// Map a habit name to the best icon. Returns SVG string or null (we fall back to initials).
+function pickHabitIcon(name) {
+  const n = name.toLowerCase();
+  const rules = [
+    ['music', /\b(music|song|listen|spotify|piano|sing|practice music)\b/],
+    ['drop', /\b(water|drink|hydrat|cycle|period|track cycle)\b/],
+    ['food', /\b(food|meal|eat|fitpal|fitness pal|myfitness|calorie|nutrition|log food|log meal)\b/],
+    ['dog', /\b(dog|bruno|brush bruno|walk dog|pet|puppy|cat)\b/],
+    ['muscle', /\b(muscle|gym|workout|lift|exercise|strength|melox|relax|methocarb)\b/],
+    ['pill', /\b(pill|med|medicine|medication|vitamin|supplement|prescription)\b/],
+    ['brush', /\b(brush|teeth|hair|comb)\b/],
+    ['book', /\b(book|read|study|journal|write)\b/],
+    ['meditate', /\b(meditate|breath|breathe|yoga|mindful|pray|stretch)\b/],
+    ['run', /\b(run|jog|walk|cardio|steps|hike|cycling|bike)\b/],
+    ['sleep', /\b(sleep|bed|nap|rest)\b/],
+    ['heart', /\b(heart|love|gratitude|self care|self-care|hug|call)\b/],
+    ['sun', /\b(sun|morning|wake|sunlight|daylight|outside)\b/],
+    ['star', /\b(goal|win|highlight|accomplish|achievement)\b/]
+  ];
+  for (const [icon, regex] of rules) {
+    if (regex.test(n)) return HABIT_ICONS[icon];
+  }
+  return null;
+}
+
 function todayKey() {
   const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' }));
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -1465,19 +2047,12 @@ function todayKey() {
 function loadHabits() { return store.get('habits', []); }
 function loadHabitState() {
   const state = store.get('habitState', { date: '', done: {} });
-  if (state.date !== todayKey()) {
-    return { date: todayKey(), done: {} };
-  }
+  if (state.date !== todayKey()) return { date: todayKey(), done: {} };
   return state;
 }
 function saveHabitState(s) { store.set('habitState', s); }
-
-function makeHabitId() {
-  return 'h_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-}
-
+function makeHabitId() { return 'h_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 function abbrev(name) {
-  // First letter of each word (max 2 chars), uppercase. e.g. "Brush Bruno" -> "BB"
   const words = name.trim().split(/\s+/).filter(Boolean);
   if (!words.length) return '·';
   if (words.length === 1) return words[0].charAt(0).toUpperCase();
@@ -1487,18 +2062,20 @@ function abbrev(name) {
 function renderHabits() {
   const habits = loadHabits();
   const state = loadHabitState();
-  saveHabitState(state); // refresh date stamp if it rolled
+  saveHabitState(state);
   const list = $('#habitsList');
   if (!habits.length) {
-    list.innerHTML = `<div class="habits-empty">No habits yet — add one below to start tracking.</div>`;
+    list.innerHTML = `<div class="habits-empty">No habits yet — flip the card to add some.</div>`;
     $('#habitsProgress').textContent = '—';
+    renderHabitsEdit();
     return;
   }
   list.innerHTML = habits.map(h => {
     const done = !!state.done[h.id];
+    const icon = pickHabitIcon(h.name);
+    const inner = icon ? icon : `<span class="habit-init">${abbrev(h.name)}</span>`;
     return `<div class="habit-item">
-      <button class="habit-remove" data-hr="${h.id}" title="remove habit">×</button>
-      <button class="habit-toggle ${done?'done':''}" data-ht="${h.id}" title="${escapeHtml(h.name)}"><span>${abbrev(h.name)}</span></button>
+      <button class="habit-toggle ${done?'done':''}" data-ht="${h.id}" title="${escapeHtml(h.name)}">${inner}</button>
       <div class="habit-label">${escapeHtml(h.name)}</div>
     </div>`;
   }).join('');
@@ -1508,10 +2085,24 @@ function renderHabits() {
     const id = b.dataset.ht; const s = loadHabitState();
     s.done[id] = !s.done[id]; saveHabitState(s); renderHabits();
   });
-  $$('[data-hr]').forEach(b => b.onclick = (e) => {
-    e.stopPropagation();
-    const id = b.dataset.hr;
-    if (!confirm('Remove this habit?')) return;
+  renderHabitsEdit();
+}
+
+function renderHabitsEdit() {
+  const habits = loadHabits();
+  const list = $('#habitsListEdit');
+  if (!list) return;
+  if (!habits.length) { list.innerHTML = `<div class="edit-empty">No habits yet.</div>`; return; }
+  list.innerHTML = habits.map((h, i) => {
+    const icon = pickHabitIcon(h.name);
+    const iconHTML = icon ? `<span style="display:inline-flex;width:18px;height:18px;color:var(--accent);margin-right:8px;vertical-align:middle">${icon.replace(/width="\d+" height="\d+"/, 'width="18" height="18"')}</span>` : '';
+    return `<div class="edit-row">
+      <span class="edit-name" style="display:flex;align-items:center">${iconHTML}${escapeHtml(h.name)}</span>
+      <button class="edit-del" data-he="${h.id}" title="remove">×</button>
+    </div>`;
+  }).join('');
+  $$('[data-he]').forEach(b => b.onclick = () => {
+    const id = b.dataset.he;
     const hs = loadHabits().filter(h => h.id !== id);
     store.set('habits', hs);
     const s = loadHabitState(); delete s.done[id]; saveHabitState(s);
@@ -1533,6 +2124,128 @@ function addHabit() {
   renderHabits();
 }
 
+/* SEARCH BAR */
+function initSearch() {
+  const go = () => {
+    const v = $('#searchInput').value.trim();
+    if (!v) return;
+    window.location.href = 'https://www.google.com/search?q=' + encodeURIComponent(v);
+  };
+  $('#searchBtn').onclick = go;
+  $('#searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+}
+
+/* EDITABLE LINKS */
+function loadLinks() { return store.get('links', CONFIG.defaultLinks); }
+function renderLinks() {
+  const links = loadLinks();
+  const list = $('#linksList');
+  if (!links.length) {
+    list.innerHTML = `<div class="clock-suggest" style="padding:6px 0">No links yet — flip to add some.</div>`;
+  } else {
+    list.innerHTML = links.map(l => `
+      <a href="${escapeHtml(l.url)}" target="_blank">${escapeHtml(l.label)} <span class="arrow">→</span></a>
+    `).join('');
+  }
+  renderLinksEdit();
+}
+function renderLinksEdit() {
+  const links = loadLinks();
+  const list = $('#linksListEdit');
+  if (!list) return;
+  if (!links.length) { list.innerHTML = `<div class="edit-empty">No links yet.</div>`; return; }
+  list.innerHTML = links.map((l, i) => `
+    <div class="edit-row">
+      <span class="edit-name">${escapeHtml(l.label)}</span>
+      <button class="edit-del" data-le="${i}" title="remove">×</button>
+    </div>
+  `).join('');
+  $$('[data-le]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.le; const ls = loadLinks(); ls.splice(i,1);
+    store.set('links', ls); renderLinks();
+  });
+}
+function addLink() {
+  const labelInp = $('#linkLabelInput');
+  const urlInp = $('#linkUrlInput');
+  const label = labelInp.value.trim();
+  let url = urlInp.value.trim();
+  if (!label || !url) {
+    if (!label) { labelInp.style.borderColor='var(--red)'; setTimeout(()=>labelInp.style.borderColor='',1500); }
+    if (!url) { urlInp.style.borderColor='var(--red)'; setTimeout(()=>urlInp.style.borderColor='',1500); }
+    return;
+  }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  const ls = loadLinks();
+  ls.push({ label, url });
+  store.set('links', ls);
+  labelInp.value = '';
+  urlInp.value = '';
+  renderLinks();
+}
+
+/* COUNTDOWNS */
+function loadCountdowns() { return store.get('countdowns', []); }
+function daysBetween(target) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const t = new Date(target + 'T00:00:00');
+  return Math.round((t - today) / 86400000);
+}
+function renderCountdowns() {
+  const cds = loadCountdowns()
+    .map((c, i) => ({ ...c, _i: i, _days: daysBetween(c.date) }))
+    .sort((a,b) => {
+      // upcoming (>=0) first, then past
+      const ap = a._days >= 0, bp = b._days >= 0;
+      if (ap && !bp) return -1;
+      if (!ap && bp) return 1;
+      return a._days - b._days;
+    });
+  const list = $('#countdownList');
+  if (!cds.length) {
+    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No countdowns yet — add one below.</div>`;
+    $('#countdownProgress').textContent = '—';
+    return;
+  }
+  const upcoming = cds.filter(c => c._days >= 0).length;
+  $('#countdownProgress').textContent = upcoming + ' upcoming';
+  list.innerHTML = cds.map(c => {
+    const d = c._days;
+    let display, cls = '';
+    if (d === 0) display = 'today';
+    else if (d === 1) display = '1<span class="unit">day</span>';
+    else if (d > 0) display = `${d}<span class="unit">days</span>`;
+    else { display = `${-d}<span class="unit">d ago</span>`; cls = 'past'; }
+    const dateLabel = new Date(c.date + 'T00:00:00').toLocaleDateString('en-US',{month:'short', day:'numeric', year:'2-digit'});
+    return `<div class="countdown-row">
+      <div class="countdown-name">${escapeHtml(c.name)}<small>${dateLabel}</small></div>
+      <div class="countdown-days ${cls}">${display}</div>
+      <button class="clock-remove" data-cdi="${c._i}" title="remove">×</button>
+    </div>`;
+  }).join('');
+  $$('[data-cdi]').forEach(b => b.onclick = () => {
+    const i = +b.dataset.cdi; const cs = loadCountdowns(); cs.splice(i,1);
+    store.set('countdowns', cs); renderCountdowns();
+  });
+}
+function addCountdown() {
+  const nameInp = $('#cdNameInput');
+  const dateInp = $('#cdDateInput');
+  const name = nameInp.value.trim();
+  const date = dateInp.value;
+  if (!name || !date) {
+    if (!name) { nameInp.style.borderColor='var(--red)'; setTimeout(()=>nameInp.style.borderColor='',1500); }
+    if (!date) { dateInp.style.borderColor='var(--red)'; setTimeout(()=>dateInp.style.borderColor='',1500); }
+    return;
+  }
+  const cs = loadCountdowns();
+  cs.push({ name, date });
+  store.set('countdowns', cs);
+  nameInp.value = '';
+  dateInp.value = '';
+  renderCountdowns();
+}
+
 function initNotes() {
   const box = $('#notesBox');
   box.value = store.get('notes','') || '';
@@ -1544,82 +2257,36 @@ function initNotes() {
   $('#notesSaved').textContent = box.value ? 'restored' : 'autosaves';
 }
 
-async function fetchCalendar() {
-  const list = $('#calList');
-  if (!CONFIG.calendarIcalUrl) {
-    $('#calStatus').textContent = 'not configured';
-    list.innerHTML = `<div class="cal-empty">
-      <p>To show Google Calendar events here:</p>
-      <p style="margin-top:6px">1. Calendar settings → click your calendar</p>
-      <p>2. Copy the <b>Secret address in iCal format</b></p>
-      <p>3. Paste into <code>CONFIG.calendarIcalUrl</code></p>
-      <p style="margin-top:8px"><a href="https://calendar.google.com" target="_blank">Open Calendar →</a></p>
-    </div>`; return;
-  }
-  $('#calStatus').textContent = 'loading…';
-  try {
-    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(CONFIG.calendarIcalUrl)}`);
-    const text = await r.text();
-    const events = parseIcs(text);
-    const now = new Date(); const weekOut = new Date(now.getTime()+7*86400000);
-    const upcoming = events.filter(e => e.start >= now && e.start <= weekOut).sort((a,b)=>a.start-b.start).slice(0,12);
-    if (!upcoming.length) { list.innerHTML = `<div class="cal-empty">No events in the next 7 days.</div>`; }
-    else {
-      const today = now.toDateString(); const tomorrow = new Date(now.getTime()+86400000).toDateString();
-      list.innerHTML = upcoming.map(e => {
-        const ds = e.start.toDateString();
-        let label = e.start.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-        if (ds === today) label = 'Today'; else if (ds === tomorrow) label = 'Tomorrow';
-        const timeStr = e.allDay ? 'all day' : e.start.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-        return `<div class="cal-event"><div><div class="cal-event-date">${label}</div><div class="cal-event-time">${timeStr}</div></div><div class="cal-event-title">${escapeHtml(e.summary)}</div></div>`;
-      }).join('');
-    }
-    $('#calStatus').textContent = upcoming.length + ' events';
-  } catch(e) {
-    $('#calStatus').textContent = 'error';
-    list.innerHTML = `<div class="cal-empty">Couldn't load calendar.</div>`;
-  }
-}
-function parseIcs(text) {
-  const events = [];
-  const blocks = text.split('BEGIN:VEVENT').slice(1);
-  for (const b of blocks) {
-    const block = b.split('END:VEVENT')[0];
-    const lines = block.replace(/\r\n /g,'').split(/\r?\n/);
-    const ev = {};
-    for (const line of lines) {
-      if (line.startsWith('SUMMARY:')) ev.summary = line.slice(8);
-      else if (line.startsWith('DTSTART')) {
-        const v = line.split(':')[1]; if (!v) continue;
-        if (line.includes('VALUE=DATE') || (v.length===8 && !v.includes('T'))) {
-          ev.start = new Date(+v.slice(0,4), +v.slice(4,6)-1, +v.slice(6,8)); ev.allDay = true;
-        } else { ev.start = parseIcsDate(v); ev.allDay = false; }
-      }
-    }
-    if (ev.start && ev.summary) events.push(ev);
-  }
-  return events;
-}
-function parseIcsDate(s) {
-  const y=+s.slice(0,4),mo=+s.slice(4,6)-1,d=+s.slice(6,8),h=+s.slice(9,11),mi=+s.slice(11,13),se=+s.slice(13,15)||0;
-  return s.endsWith('Z') ? new Date(Date.UTC(y,mo,d,h,mi,se)) : new Date(y,mo,d,h,mi,se);
-}
 function escapeHtml(s){return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 async function fetchNews() {
-  const containers = $$('.news-list[data-news]');
+  const containers = $$('.news-list[data-news], .news-list[data-feed]');
   await Promise.all(containers.map(async box => {
-    const q = box.dataset.news;
-    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=en-US&gl=US&ceid=US:en`)}`;
+    // Determine feed URL: either direct RSS or Google News search
+    const directFeed = box.dataset.feed;
+    const overrideSource = box.dataset.source;
+    const rssUrl = directFeed
+      ? directFeed
+      : `https://news.google.com/rss/search?q=${encodeURIComponent(box.dataset.news)}&hl=en-US&gl=US&ceid=US:en`;
+    // Try two CORS proxies in order
+    const proxies = [
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
+      `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
+    ];
+    let txt = null;
+    for (const p of proxies) {
+      try { const r = await fetch(p); if (!r.ok) continue; const t = await r.text(); if (t && t.length > 100) { txt = t; break; } }
+      catch(e) { continue; }
+    }
+    if (!txt) { box.innerHTML = `<div class="news-loading">News unavailable. Refresh in a minute.</div>`; return; }
     try {
-      const r = await fetch(url); const txt = await r.text();
       const doc = new DOMParser().parseFromString(txt, 'text/xml');
       const items = Array.from(doc.querySelectorAll('item')).slice(0,8);
       if (!items.length) throw new Error('empty');
       box.innerHTML = items.map(it => {
         const title = it.querySelector('title')?.textContent || '';
         const link = it.querySelector('link')?.textContent || '#';
-        const source = it.querySelector('source')?.textContent || '';
+        const source = overrideSource || it.querySelector('source')?.textContent || '';
         return `<div class="news-item"><a href="${link}" target="_blank">${escapeHtml(title)}</a>${source?`<div class="news-source">${escapeHtml(source)}</div>`:''}</div>`;
       }).join('');
     } catch(e) {
@@ -1631,8 +2298,9 @@ async function fetchNews() {
 function init() {
   initTheme();
   updateHero(); renderClocks(); initNotes(); renderHabits();
-  fetchTickers(); fetchWeather(); fetchCalendar(); fetchNews();
-  setInterval(() => { updateHero(); renderClocks(); renderHabits(); }, 1000 * 20);
+  renderLinks(); renderCountdowns(); initSearch(); initFlipCards();
+  fetchTickers(); fetchWeather(); fetchNews();
+  setInterval(() => { updateHero(); renderClocks(); renderHabits(); renderCountdowns(); }, 1000 * 20);
   setInterval(fetchTickers, 1000 * 60 * 5);
   setInterval(fetchWeather, 1000 * 60 * 30);
   $('#clockAddBtn').onclick = addClock;
@@ -1643,6 +2311,20 @@ function init() {
   $('#weatherInput').addEventListener('keydown', e => { if (e.key === 'Enter') addWeatherCity(); });
   $('#habitAddBtn').onclick = addHabit;
   $('#habitInput').addEventListener('keydown', e => { if (e.key === 'Enter') addHabit(); });
+  $('#linkAddBtn').onclick = addLink;
+  $('#linkUrlInput').addEventListener('keydown', e => { if (e.key === 'Enter') addLink(); });
+  $('#linkLabelInput').addEventListener('keydown', e => { if (e.key === 'Enter') addLink(); });
+  $('#cdAddBtn').onclick = addCountdown;
+  $('#cdNameInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCountdown(); });
+  $('#cdDateInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCountdown(); });
+}
+
+function initFlipCards() {
+  $$('[data-flip]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
+    const card = document.getElementById(b.dataset.flip);
+    if (card) card.classList.toggle('flipped');
+  });
 }
 document.addEventListener('DOMContentLoaded', init);
 </script>

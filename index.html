@@ -1125,31 +1125,77 @@
   .countdown-add button:hover { background: var(--accent-warm); }
 
   /* EDITABLE LINKS */
-  .links-list .link-row {
-    display: flex;
-    align-items: center;
+  .links-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
-    margin-bottom: 6px;
   }
-  .links-list .link-row a { flex: 1; margin-bottom: 0; }
-  .link-delete {
+  .links-list a {
+    display: block;
+    padding: 8px 10px;
+    margin-bottom: 0;
     background: var(--bg-elev);
     border: 1px solid var(--border-soft);
     border-radius: 6px;
-    width: 28px;
-    height: 36px;
-    color: var(--text-faint);
-    font-size: 14px;
-    cursor: pointer;
-    opacity: 0;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 1.3;
     transition: all 0.15s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .links-list a .arrow { display: none; }
+  .links-list a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* Reorder list on back of links card */
+  .reorder-list { margin-top: 4px; }
+  .reorder-row {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: grab;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .reorder-row.dragging { opacity: 0.4; }
+  .reorder-row.drag-over { border-color: var(--accent); border-style: dashed; }
+  .reorder-handle {
+    color: var(--text-faint);
+    font-size: 14px;
+    line-height: 1;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
     flex-shrink: 0;
   }
-  .link-row:hover .link-delete { opacity: 1; }
-  .link-delete:hover { color: var(--red); border-color: var(--red); }
+  .reorder-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .reorder-del {
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+    transition: color 0.15s;
+  }
+  .reorder-del:hover { color: var(--red); }
   .link-add {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
@@ -1793,27 +1839,7 @@ const CITY_TZ = {
   'mexico city':'America/Mexico_City','sao paulo':'America/Sao_Paulo','buenos aires':'America/Argentina/Buenos_Aires',
   'utc':'UTC','gmt':'UTC'
 };
-// Best-effort IANA tz lookup from a free-text input
-function resolveTzFromText(input) {
-  if (!input) return null;
-  const raw = input.trim();
-  // 1. IANA tz directly (e.g. "Europe/Paris")
-  if (raw.includes('/')) {
-    try { new Date().toLocaleTimeString('en-US',{timeZone:raw}); return raw; } catch(e){}
-  }
-  // 2. Try table lookup: full string, then just-before-comma, then last token
-  const lower = raw.toLowerCase();
-  const candidates = [lower];
-  if (lower.includes(',')) {
-    candidates.push(lower.split(',')[0].trim());   // "columbus, ohio" -> "columbus"
-    candidates.push(lower.split(',').pop().trim()); // "columbus, ohio" -> "ohio"
-  }
-  // also try last word ("New York City" -> "city" — not useful, but "san francisco bay area" -> "area")
-  for (const c of candidates) {
-    if (CITY_TZ[c]) return CITY_TZ[c];
-  }
-  return null;
-}
+// Best-effort IANA tz lookup: relies on Open-Meteo geocoder in addClock below
 
 async function addClock() {
   const inp = $('#clockInput');
@@ -1821,33 +1847,56 @@ async function addClock() {
   const v = inp.value.trim();
   if (!v) return;
 
-  let tz = resolveTzFromText(v);
-  let displayName = v.split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+  let tz = null;
+  let displayName = v;
 
-  // Fallback to Open-Meteo geocoder to derive IANA tz for anywhere in the world
+  // 1. If it looks like an IANA timezone (contains "/"), accept it directly
+  if (v.includes('/')) {
+    try { new Date().toLocaleTimeString('en-US',{timeZone:v}); tz = v; displayName = v.split('/').pop().replace(/_/g,' '); }
+    catch(e){}
+  }
+
+  // 2. Otherwise, use Open-Meteo geocoder — handles ANY city in the world
   if (!tz) {
     const originalLabel = btn.textContent;
     btn.textContent = '…';
     btn.disabled = true;
-    try {
-      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=1&language=en&format=json`);
-      const d = await r.json();
-      if (d.results && d.results.length && d.results[0].timezone) {
-        const hit = d.results[0];
-        try { new Date().toLocaleTimeString('en-US',{timeZone:hit.timezone}); tz = hit.timezone; } catch(e){}
-        if (tz) {
-          // Build nicer display name
-          if (hit.admin1 && hit.country_code === 'US') {
-            const stateAbbr = (typeof US_STATE_ABBR !== 'undefined' && US_STATE_ABBR[hit.admin1]) || hit.admin1.slice(0,2).toUpperCase();
-            displayName = `${hit.name}, ${stateAbbr}`;
-          } else if (hit.country) {
-            displayName = `${hit.name}, ${hit.country}`;
-          } else {
-            displayName = hit.name;
-          }
+    // Strip everything after comma for a cleaner query (e.g. "Columbus, Ohio" -> "Columbus")
+    // but try the full string first in case it's like "Springfield, MA"
+    const tryQueries = [v];
+    if (v.includes(',')) tryQueries.push(v.split(',')[0].trim());
+    let hit = null;
+    for (const q of tryQueries) {
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`;
+      const d = await fetchOpenMeteo(url);
+      if (d && d.results && d.results.length) {
+        if (v.includes(',')) {
+          const after = v.split(',').slice(1).join(',').trim().toLowerCase();
+          hit = d.results.find(x =>
+            (x.admin1 && x.admin1.toLowerCase().includes(after)) ||
+            (x.country && x.country.toLowerCase().includes(after)) ||
+            (x.country_code && x.country_code.toLowerCase() === after)
+          ) || d.results[0];
+        } else {
+          hit = d.results[0];
+        }
+        break;
+      }
+    }
+    if (hit && hit.timezone) {
+      try { new Date().toLocaleTimeString('en-US',{timeZone:hit.timezone}); tz = hit.timezone; }
+      catch(e){}
+      if (tz) {
+        if (hit.admin1 && hit.country_code === 'US') {
+          const stateAbbr = (typeof US_STATE_ABBR !== 'undefined' && US_STATE_ABBR[hit.admin1]) || hit.admin1.slice(0,2).toUpperCase();
+          displayName = `${hit.name}, ${stateAbbr}`;
+        } else if (hit.country) {
+          displayName = `${hit.name}, ${hit.country}`;
+        } else {
+          displayName = hit.name;
         }
       }
-    } catch(e) {}
+    }
     btn.textContent = originalLabel;
     btn.disabled = false;
   }
@@ -1985,33 +2034,47 @@ const WEATHER_ICONS = {
 };
 const WEATHER_DESC = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Heavy snow',95:'Thunderstorm',96:'Storm w/ hail',99:'Severe storm'};
 
+async function fetchOpenMeteo(url) {
+  // Try direct first (Open-Meteo supports CORS), fall back to proxies if it fails
+  const tries = [
+    url,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+  ];
+  for (const u of tries) {
+    try {
+      const r = await fetch(u);
+      if (!r.ok) continue;
+      const j = await r.json();
+      if (j) return j;
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
 async function fetchWeather() {
   const cities = loadWeatherCities();
   const list = $('#weatherList');
   if (!cities.length) {
-    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No cities yet — add one below.</div>`;
+    list.innerHTML = `<div class="clock-suggest" style="padding:8px 0">No cities yet — flip the card to add some.</div>`;
+    renderWeatherEdit();
     return;
   }
   list.innerHTML = cities.map(c => `<div class="weather-row"><div class="weather-city">${c.name}<small>loading…</small></div><span class="weather-icon"></span><span class="weather-temp">—</span></div>`).join('');
   const results = await Promise.all(cities.map(async c => {
-    try {
-      const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`);
-      const d = await r.json();
-      return { ...c, temp: d.current.temperature_2m, code: d.current.weather_code };
-    } catch(e) { return { ...c, error: true }; }
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto`;
+    const d = await fetchOpenMeteo(url);
+    if (!d || !d.current) return { ...c, error: true };
+    return { ...c, temp: d.current.temperature_2m, code: d.current.weather_code };
   }));
   list.innerHTML = results.map((c, i) => {
-    if (c.error) return `<div class="weather-row"><div class="weather-city">${c.name}<small>unavailable</small></div><span class="weather-icon"></span><span class="weather-temp">—<button class="clock-remove" data-wi="${i}" title="remove">×</button></span></div>`;
+    if (c.error) return `<div class="weather-row"><div class="weather-city">${c.name}<small>unavailable</small></div><span class="weather-icon"></span><span class="weather-temp">—</span></div>`;
     return `<div class="weather-row">
       <div class="weather-city">${c.name}<small>${WEATHER_DESC[c.code]||''}</small></div>
       <span class="weather-icon">${WEATHER_ICONS[c.code]||WX_SVG.cloud}</span>
-      <span class="weather-temp">${Math.round(c.temp)}°<button class="clock-remove" data-wi="${i}" title="remove">×</button></span>
+      <span class="weather-temp">${Math.round(c.temp)}°</span>
     </div>`;
   }).join('');
-  $$('[data-wi]').forEach(b => b.onclick = () => {
-    const i = +b.dataset.wi; const cs = loadWeatherCities(); cs.splice(i,1);
-    store.set('weather', cs); fetchWeather();
-  });
   renderWeatherEdit();
 }
 
@@ -2041,14 +2104,22 @@ async function addWeatherCity() {
   btn.textContent = '…';
   btn.disabled = true;
   try {
-    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=1&language=en&format=json`);
-    const d = await r.json();
-    if (!d.results || !d.results.length) {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v)}&count=5&language=en&format=json`;
+    const d = await fetchOpenMeteo(url);
+    if (!d || !d.results || !d.results.length) {
       inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',1500);
       return;
     }
-    const hit = d.results[0];
-    // Build a nice name like "Portland, OR" or "Tokyo, Japan"
+    // Prefer matches that align with the comma-suffix if present
+    let hit = d.results[0];
+    if (v.includes(',')) {
+      const after = v.split(',').slice(1).join(',').trim().toLowerCase();
+      hit = d.results.find(x =>
+        (x.admin1 && x.admin1.toLowerCase().includes(after)) ||
+        (x.country && x.country.toLowerCase().includes(after)) ||
+        (x.country_code && x.country_code.toLowerCase() === after)
+      ) || d.results[0];
+    }
     let displayName = hit.name;
     if (hit.admin1 && hit.country_code === 'US') {
       const stateAbbr = US_STATE_ABBR[hit.admin1] || hit.admin1.slice(0,2).toUpperCase();
@@ -2227,10 +2298,10 @@ function renderLinks() {
   const links = loadLinks();
   const list = $('#linksList');
   if (!links.length) {
-    list.innerHTML = `<div class="clock-suggest" style="padding:6px 0">No links yet — flip to add some.</div>`;
+    list.innerHTML = `<div class="clock-suggest" style="padding:6px 0;grid-column:1/-1">No links yet — flip to add some.</div>`;
   } else {
     list.innerHTML = links.map(l => `
-      <a href="${escapeHtml(l.url)}" target="_blank">${escapeHtml(l.label)} <span class="arrow">→</span></a>
+      <a href="${escapeHtml(l.url)}" target="_blank" title="${escapeHtml(l.label)}">${escapeHtml(l.label)}</a>
     `).join('');
   }
   renderLinksEdit();
@@ -2240,15 +2311,52 @@ function renderLinksEdit() {
   const list = $('#linksListEdit');
   if (!list) return;
   if (!links.length) { list.innerHTML = `<div class="edit-empty">No links yet.</div>`; return; }
+  list.classList.add('reorder-list');
   list.innerHTML = links.map((l, i) => `
-    <div class="edit-row">
-      <span class="edit-name">${escapeHtml(l.label)}</span>
-      <button class="edit-del" data-le="${i}" title="remove">×</button>
+    <div class="reorder-row" draggable="true" data-idx="${i}">
+      <span class="reorder-handle" title="drag to reorder">⋮⋮</span>
+      <span class="reorder-name">${escapeHtml(l.label)}</span>
+      <button class="reorder-del" data-le="${i}" title="remove">×</button>
     </div>
   `).join('');
-  $$('[data-le]').forEach(b => b.onclick = () => {
+
+  // Delete button
+  $$('[data-le]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
     const i = +b.dataset.le; const ls = loadLinks(); ls.splice(i,1);
     store.set('links', ls); renderLinks();
+  });
+
+  // Drag and drop reordering
+  let draggedIdx = null;
+  $$('.reorder-row', list).forEach(row => {
+    row.addEventListener('dragstart', e => {
+      draggedIdx = +row.dataset.idx;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      $$('.reorder-row', list).forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      $$('.reorder-row', list).forEach(r => r.classList.remove('drag-over'));
+      if (+row.dataset.idx !== draggedIdx) row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      const targetIdx = +row.dataset.idx;
+      if (draggedIdx === null || draggedIdx === targetIdx) return;
+      const ls = loadLinks();
+      const [moved] = ls.splice(draggedIdx, 1);
+      ls.splice(targetIdx, 0, moved);
+      store.set('links', ls);
+      draggedIdx = null;
+      renderLinks();
+    });
   });
 }
 function addLink() {
